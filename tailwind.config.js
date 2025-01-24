@@ -15,6 +15,22 @@ export default {
         sm: 'calc(var(--radius) - 4px)',
       },
       colors: {
+        theme: {
+          background: {
+            main: '#ffffffcc',
+            dark: '#000',
+            secondary: '#f8f9fa'
+          },
+          text: {
+            main: '#000',
+            dark: '#fff',
+            second: "#6c757d"
+          },
+          button: {
+            primary: '#3394d0',
+            dark: '#3394d0',
+          }
+          },	
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         card: {

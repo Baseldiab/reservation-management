@@ -112,3 +112,23 @@
 *::-webkit-scrollbar-thumb:active {
   background-color: #1f71aa !important;
 }
+
+/* ===================================== */
+input:-webkit-autofill {
+  background-color: transparent !important;
+  -webkit-text-fill-color: #000 !important;
+  color: #000 !important;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #000 !important;
+  color: #000 !important;
+  box-shadow: 0 0 0px 1000px rgb(51 148 208 / 27%) inset;
+  transition: background-color 5000s ease-in-out 0s;
+  -webkit-transition: background-color 5000s ease-in-out 0s;
+  -moz-transition: background-color 5000s ease-in-out 0s;
+  -ms-transition: background-color 5000s ease-in-out 0s;
+  -o-transition: background-color 5000s ease-in-out 0s;
+}

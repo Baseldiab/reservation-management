@@ -27,11 +27,8 @@ import { Loader2 } from "lucide-react";
 import MainLogoIcon from "@/components/icons/MainLogoIcon";
 import { useTheme } from "@/components/provideres/theme-provider";
 
-// Add login schema
-const loginSchema = z.object({
-  email: z.string().email("Please enter a valid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
-});
+// rules import
+import { loginSchema } from "@/components/rules/rules";
 
 type LoginFormValues = z.infer<typeof loginSchema>;
 
@@ -79,8 +76,8 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-w-screen min-h-screen ">
-      <div className="flex w-[448px] max-w-md px-[32px] flex-col items-start gap-8 pt-8 pb-[32px] rounded-2xl bg-theme-background-primary">
+    <div className="flex justify-center items-center min-w-screen min-h-screen bg-theme-background-secondary">
+      <div className="flex w-[448px] max-w-md px-[32px] flex-col items-start gap-8 pt-8 pb-[32px] rounded-2xl bg-theme-background-main dark:bg-theme-background-dark border border-theme-border-main dark:border-theme-border-dark">
         <div className="w-full flex flex-col items-center justify-center gap-6">
           {/* <img src={Logo} alt="logo" className="size-14" /> */}
 
@@ -161,6 +158,7 @@ const LoginPage = () => {
                 disabled={loginMutation.isPending}
                 type="submit"
                 className="w-full h-[56px] font-medium text-base flex items-center gap-2"
+                variant="default"
               >
                 Login
                 {loginMutation.isPending && (

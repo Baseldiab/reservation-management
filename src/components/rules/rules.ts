@@ -16,23 +16,29 @@ export const paySchema = z.object({
 });
   
 
-export const loginSchema = z.object({
-    username: z.string().min(3, {
-      message: "Username must be more than 3 characters",
-    }),
-    password: z
-      .string()
-      .regex(
-        /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{9,}$/,
-        "Password must be at least 8 characters long and include a letter, a number, and a special character"
-      ),
-  });
-
   export const userSchema = z.object({
     name: z.string().min(3, "Name is required"),
     phone: z.string().regex(/^\d{11}$/, "Invalid phone number format"),
     email: z.string().email("Invalid email address"),
    
   });
-  
+
+
+  export const loginSchema = z.object({
+    email: z.string().email("Please enter a valid email address"),
+    password: z
+      .string()
+      .min(6, "Password must be at least 6 characters long")
+      .max(20, "Password must not exceed 20 characters")
+      .regex(
+        /[A-Za-z\u0600-\u06FF]/,
+        "Password must contain at least one letter"
+      )
+      .regex(/[0-9]/, "Password must contain at least one number")
+      .regex(
+        /[@&'"*%$]/,
+        "Password must contain at least one special character like @&'\"*%$"
+      ),
+  });
+
   export type UserModel = z.infer<typeof userSchema>;

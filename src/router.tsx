@@ -1,15 +1,19 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
-// Pages
-import HomePage from "@/pages/home/home-page";
-import ErrorElement from "@/components/error/error";
-import LoginPage from "@/pages/login/login-page";
-
 // Components
 import Layout from "@/components/layout/layout";
 
 // components auth
 import AuthedRoute from "@/components/auth/authed-route";
+
+// Pages
+import ErrorElement from "@/components/error/error";
+// pages auth
+import LoginPage from "@/pages/login/login-page";
+import SignUpPage from "@/pages/signUp/singup-page";
+
+// pages home
+import HomePage from "@/pages/home/home-page";
 
 const AppRouter = () => {
   const router = createBrowserRouter([
@@ -34,7 +38,10 @@ const AppRouter = () => {
       path: "/login",
       element: <LoginPage />,
     },
-
+    {
+      path: "/signup",
+      element: <SignUpPage />,
+    },
     {
       path: "*",
       element: <ErrorElement />,

@@ -24,14 +24,20 @@ export function Password(props: React.InputHTMLAttributes<HTMLInputElement>) {
         type="button"
         variant="ghost"
         size="icon"
-        className="absolute  ltr:right-0 rtl:left-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+        className="absolute  end-0 top-0 h-full px-3 py-2 !w-fit hover:bg-transparent"
         onClick={togglePasswordVisibility}
         aria-label={showPassword ? "Hide password" : "Show password"}
       >
         {showPassword ? (
-          <EyeOff className="h-4 w-4 text-gray-500" aria-hidden="true" />
+          <EyeOff
+            className="!w-4 !h-4 text-theme-text-main dark:text-theme-text-dark"
+            aria-hidden="true"
+          />
         ) : (
-          <Eye className="h-4 w-4 text-gray-500" aria-hidden="true" />
+          <Eye
+            className="!w-4 !h-4 text-theme-text-main dark:text-theme-text-dark"
+            aria-hidden="true"
+          />
         )}
       </Button>
     </div>
