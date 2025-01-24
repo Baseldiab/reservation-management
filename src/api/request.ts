@@ -12,6 +12,7 @@ const client = axios.create({
   headers: {
     Accept: "application/json, text/plain, */*",
   },
+  withCredentials: false
 });
 
 const request = async (options: AxiosRequestConfig) => {
@@ -32,7 +33,7 @@ const request = async (options: AxiosRequestConfig) => {
     ...defaultOptions,
     ...options,
     headers: mergedHeaders,
-    withCredentials: true,
+    withCredentials: false
   };
 
   const onSuccess = (response: AxiosResponse) => response.data;

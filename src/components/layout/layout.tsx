@@ -9,17 +9,17 @@ export default function Layout() {
   return (
     <>
       <Helmet>
-        <title>Todo App</title>
+        <title>Reservation Management</title>
         <meta
           name="description"
-          content="A modern React application with  TypeScript, Tailwind CSS, and more"
+          content="Reservation ManagementReservation Management System is a web application that enables users to book and manage hotel reservations, while administrators oversee and control all bookings. Users can create, view, and cancel reservations, while admins can filter, approve, or cancel bookings via a dashboard. The system integrates with a mock API for data management and offers a clean, responsive UI."
         />
-        <link rel="icon" type="image/png" href="/public/favicon.ico" />
+        <link rel="icon" type="image/png" href="/favicon.ico" />
       </Helmet>
 
       <main className="min-h-screen m-0 flex flex-col">
         <Navbar />
-        <div className="h-full w-full">
+        <div className="h-full w-full flex-1">
           <Outlet />
         </div>
 
