@@ -1,7 +1,7 @@
 import { request } from "@/api/request";
 
 // types imports
-import { User, UserDto, UsersParams, UserUpdateDto } from "@/api/types/user";
+import { GetProfileSchema, User, UserDto, UsersParams, UserUpdateDto } from "@/api/types/user";
 
 // enums imports
 import { UserType } from "@/api/enums/enums";
@@ -21,7 +21,7 @@ export const getAllUsers = async (
   };
 
 export const login = async (
-    params: UsersParams
+    params: GetProfileSchema
   ): Promise< User[] > => {
     return request({
       url: "users",
