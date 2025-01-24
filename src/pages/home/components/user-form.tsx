@@ -22,11 +22,9 @@ import {
 import { Input } from "@/components/ui/input";
 
 // api imports
-import { UserUpdateDto } from "@/api/types/UserUpdateDto";
-import { UserDto } from "@/api/types/UserDto";
 import { User } from "@/api/types/user";
 import { userSchema } from "@/components/rules/rules";
-import { createUser, updateUser } from "@/api/routes/user";
+import { signUp, updateUser } from "@/api/routes/user";
 import { Loader2 } from "lucide-react";
 
 export default function UserForm() {

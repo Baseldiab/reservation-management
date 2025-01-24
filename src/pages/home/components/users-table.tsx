@@ -31,11 +31,14 @@ import Loading from "@/components/common/loading";
 import { useToast } from "@/hooks/use-toast";
 import SearchUser from "./search-user";
 import FilterUsers from "./filter-users";
+import { formatDate } from "@/lib/utils";
 
 export default function UsersTable() {
   const queryClient = useQueryClient();
 
   const { toast } = useToast();
+
+  console.log(formatDate(new Date().toISOString()));
 
   // state
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false);

@@ -1,36 +1,62 @@
+import { Gender, UserType } from "@/api/enums/enums"
+
 export interface UsersParams {
   page?: number;
   limit?: number;
+  gender?: Gender;
+  address_city?: string;
+  address_country?: string;
+  user_type?: UserType;
+  email?: string;
+  phone_number?: string;
 }
 
-export interface Geo {
-  lat: string;
-  lng: string;
-}
-
-export interface Address {
-  street: string;
-  suite: string;
-  city: string;
-  zipcode: string;
-  geo: Geo;
-}
-
-export interface Company {
-  name: string;
-  catchPhrase: string;
-  bs: string;
-}
 
 export interface User {
-  id: number;
+  created_at: string;
   name: string;
-  username: string;
+  avatar: string;
+  gender: Gender;
+  address_city: string;
+  address_country: string;
+  user_type: UserType;
   email: string;
-  address: Address;
-  phone: string;
-  website: string;
-  company: Company;
+  phone_number: string;
+  password: string;
+  id: string;
 }
 
 
+export interface GetProfileSchema {
+  password: string;
+  email: string;
+}
+
+
+
+
+export type UserDto = {
+    created_at: string,   
+    name: string,
+    avatar: string,
+    gender: Gender,                            // male or female
+    address_city: string,
+    address_country: string,
+    user_type: UserType,                           // admin or user
+    email: string,
+    phone_number: string,
+    password: string
+  }
+  
+  export type UserUpdateDto = {
+  created_at?: string,   
+  name?: string,
+  avatar?: string,
+  gender?: Gender,                            // male or female
+  address_city?: string,
+  address_country?: string,
+  user_type?: UserType,                           // admin or user
+  email?: string,
+  phone_number?: string,
+  password?: string
+}
