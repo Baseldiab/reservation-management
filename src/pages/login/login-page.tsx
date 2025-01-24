@@ -30,6 +30,9 @@ import { useTheme } from "@/components/provideres/theme-provider";
 // rules import
 import { loginSchema } from "@/components/rules/rules";
 
+// login components
+import LoginFooter from "@/pages/login/components/login-footer";
+
 type LoginFormValues = z.infer<typeof loginSchema>;
 
 const LoginPage = () => {
@@ -86,20 +89,21 @@ const LoginPage = () => {
           ) : (
             <MainLogoIcon fill="#fff" className="md:w-48 w-40" />
           )}
-
           <div className="flex flex-col gap-2 items-center justify-center">
-            <h2 className="text-2xl lg:text-[32px] font-bold text-theme-text-headingPrimary">
+            <h2 className="text-2xl lg:text-[32px] font-bold text-theme-text-title">
               Login
             </h2>
-            <p className="text-theme-text-Body">
+            <p className="text-theme-text-subtitle text-center">
               Please enter your details to get started
             </p>
           </div>
+
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
               className="w-full flex flex-col gap-6 items-start mt-4"
             >
+              {/* Email */}
               <FormField
                 control={form.control}
                 name="email"
@@ -117,6 +121,7 @@ const LoginPage = () => {
                     <FormControl>
                       <Input
                         id="email"
+                        type="email"
                         className="form-input rtl:pl-16"
                         placeholder="Enter your email"
                         {...field}
@@ -127,6 +132,7 @@ const LoginPage = () => {
                 )}
               />
 
+              {/* Password */}
               <FormField
                 control={form.control}
                 name="password"
@@ -154,6 +160,7 @@ const LoginPage = () => {
                 )}
               />
 
+              {/* Login Button */}
               <Button
                 disabled={loginMutation.isPending}
                 type="submit"
@@ -167,6 +174,8 @@ const LoginPage = () => {
               </Button>
             </form>
           </Form>
+
+          <LoginFooter />
         </div>
       </div>
     </div>
