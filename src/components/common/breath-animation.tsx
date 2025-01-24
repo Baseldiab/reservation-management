@@ -17,7 +17,7 @@ export default function BreathAnimation({
   return (
     <motion.div
       whileHover={{
-        scale: 1.3, // Scale the letter up
+        scale: 1.1, // Scale the letter up
         transition: { duration: 0.3, ease: "easeInOut" },
       }}
       // whileTap={{ scale: 0.8 }}

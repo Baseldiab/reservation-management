@@ -30,6 +30,16 @@ export const login = async (
     });
   };
 
+export const getCurrentProfile = async (
+    params: GetProfileSchema
+  ): Promise< User[] > => {
+    return request({
+      url: "users",
+      method: "get",
+      params,
+    });
+  };
+
 // POST create user
 export const signUp = async (
     data: UserDto

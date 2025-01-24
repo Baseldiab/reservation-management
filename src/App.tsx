@@ -7,6 +7,7 @@ import AppRouter from "@/router";
 
 // Ui components
 import { Toaster } from "@/components/ui/toaster";
+import AuthProvider from "./components/provideres/auth-provider";
 
 function App() {
   const queryClient = new QueryClient({
@@ -22,7 +23,9 @@ function App() {
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>
         <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
-          <AppRouter />
+          <AuthProvider>
+            <AppRouter />
+          </AuthProvider>
           <Toaster />
         </ThemeProvider>
       </QueryClientProvider>

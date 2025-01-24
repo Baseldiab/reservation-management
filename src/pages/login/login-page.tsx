@@ -4,6 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { secureStorage } from "@/utils/secure-storage";
 
 // api imports
 import { login } from "@/api/routes/user";
@@ -22,8 +23,9 @@ import {
 } from "@/components/ui/form";
 
 // assets import
-import Logo from "@/assets/imgs/logo.png";
 import { Loader2 } from "lucide-react";
+import MainLogoIcon from "@/components/icons/MainLogoIcon";
+import { useTheme } from "@/components/provideres/theme-provider";
 
 // Add login schema
 const loginSchema = z.object({
@@ -34,6 +36,7 @@ const loginSchema = z.object({
 type LoginFormValues = z.infer<typeof loginSchema>;
 
 const LoginPage = () => {
+  const { theme } = useTheme();
   // Remove useState hooks
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -49,8 +52,13 @@ const LoginPage = () => {
 
   const loginMutation = useMutation({
     mutationKey: ["login"],
-    mutationFn: login,
-    onSuccess: () => {
+    mutationFn: (data: LoginFormValues) =>
+      login({
+        email: data.email,
+        password: data.password,
+      }),
+    onSuccess: (data) => {
+      secureStorage.set(data[0]);
       toast({
         description: "successfully logged in",
       });
@@ -71,10 +79,17 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-w-screen min-h-screen bg-theme-background-secondary">
+    <div className="flex justify-center items-center min-w-screen min-h-screen ">
       <div className="flex w-[448px] max-w-md px-[32px] flex-col items-start gap-8 pt-8 pb-[32px] rounded-2xl bg-theme-background-primary">
         <div className="w-full flex flex-col items-center justify-center gap-6">
-          <img src={Logo} alt="logo" className="size-14" />
+          {/* <img src={Logo} alt="logo" className="size-14" /> */}
+
+          {theme === "light" ? (
+            <MainLogoIcon fill="#000" className="md:w-48 w-40" />
+          ) : (
+            <MainLogoIcon fill="#fff" className="md:w-48 w-40" />
+          )}
+
           <div className="flex flex-col gap-2 items-center justify-center">
             <h2 className="text-2xl lg:text-[32px] font-bold text-theme-text-headingPrimary">
               Login
