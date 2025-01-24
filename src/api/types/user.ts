@@ -49,6 +49,7 @@ export type UserDto = {
   }
   
   export type UserUpdateDto = {
+    id: number | string,
   created_at?: string,   
   name?: string,
   avatar?: string,

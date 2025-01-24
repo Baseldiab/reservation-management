@@ -122,7 +122,9 @@ export default function UsersTable() {
       cell: ({ row }) => {
         return (
           <p className="text-start font-medium ">
-            {row.original.phone ? row.original.phone : "Not found"}
+            {row.original.phone_number
+              ? row.original.phone_number
+              : "Not found"}
           </p>
         );
       },
@@ -133,7 +135,9 @@ export default function UsersTable() {
       cell: ({ row }) => {
         return (
           <p className="text-start font-medium ">
-            {row.original.address ? row.original.address.city : "Not found"}
+            {row.original.address_city
+              ? row.original.address_city
+              : "Not found"}
           </p>
         );
       },

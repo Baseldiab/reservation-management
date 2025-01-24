@@ -22,7 +22,7 @@ import {
 import { Input } from "@/components/ui/input";
 
 // api imports
-import { User } from "@/api/types/user";
+import { User, UserUpdateDto, UserDto } from "@/api/types/user";
 import { userSchema } from "@/components/rules/rules";
 import { signUp, updateUser } from "@/api/routes/user";
 import { Loader2 } from "lucide-react";
@@ -39,7 +39,7 @@ export default function UserForm() {
     resolver: zodResolver(userSchema),
     defaultValues: {
       name: item?.name ?? "",
-      phone: item?.phone ?? "",
+      phone_number: item?.phone_number ?? "",
       email: item?.email ?? "",
     },
   });
@@ -47,14 +47,14 @@ export default function UserForm() {
   useEffect(() => {
     if (item) {
       form.setValue("name", item.name);
-      form.setValue("phone", item.phone);
+      form.setValue("phone_number", item.phone_number);
       form.setValue("email", item.email);
     }
   }, [item, form]);
 
   // Add User mutation
   const addUserMutation = useMutation({
-    mutationFn: (data: UserDto) => createUser(data),
+    mutationFn: (data: UserDto) => signUp(data),
     onSuccess: (data: User) => {
       queryClient.setQueryData(["users"], (oldData: User[] | undefined) => {
         if (oldData) {
@@ -113,7 +113,8 @@ export default function UserForm() {
         id: item?.id,
       };
       if (data.name !== item.name) payload.name = data.name;
-      if (data.phone !== item.phone) payload.phone = data.phone;
+      if (data.phone_number !== item.phone_number)
+        payload.phone_number = data.phone_number;
       if (data.email !== item.email) payload.email = data.email;
 
       if (Object.keys(payload).length > 1) {
@@ -157,7 +158,7 @@ export default function UserForm() {
 
             <FormField
               control={form.control}
-              name="phone"
+              name="phone_number"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Phone Number</FormLabel>
