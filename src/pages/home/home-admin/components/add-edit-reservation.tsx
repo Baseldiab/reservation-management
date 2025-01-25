@@ -12,9 +12,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { AddNewReservationSchemaForAdmin } from "@/components/rules/rules";
 
 // api imports
-import { Reservation } from "@/api/types/reservation";
+import { Reservation, UpdateReservationDto } from "@/api/types/reservation";
 import { getAllUsers } from "@/api/routes/user";
-import { addReservation } from "@/api/routes/reservation";
+import { addReservation, updateReservation } from "@/api/routes/reservation";
 
 // enum
 import { ReservationStatus, RoomType } from "@/api/enums/enums";
@@ -113,9 +113,66 @@ const AddEditReservationDialog = ({
     },
   });
 
+  const updateReservationMutation = useMutation({
+    mutationKey: ["updateReservation"],
+    mutationFn: (data: Partial<AddNewReservationSchemaForAdminValues>) =>
+      updateReservation(item?.id || "", data),
+    onSuccess: (data) => {
+      toast({
+        description: "successfully added reservation",
+      });
+      queryClient.setQueryData(
+        ["all-reservations"],
+        (oldData: Reservation[]) => {
+          return oldData.map((reservation) =>
+            reservation.id === item?.id ? data : reservation
+          );
+        }
+      );
+    },
+    onError: (error) => {
+      toast({
+        variant: "destructive",
+        title:
+          "Something went wrong please try again or check your internet connection",
+        description: error.message,
+      });
+    },
+  });
+
   // Update handle login
   const onSubmit = (data: AddNewReservationSchemaForAdminValues) => {
     if (item) {
+      const payload: UpdateReservationDto = {};
+      if (data.name === "" || data.name !== item.name) {
+        payload.name = data.name;
+      }
+      if (data.check_in === "" || data.check_in !== item.check_in) {
+        payload.check_in = data.check_in;
+      }
+      if (data.check_out === "" || data.check_out !== item.check_out) {
+        payload.check_out = data.check_out;
+      }
+      if (data.reservation_status !== item.reservation_status) {
+        payload.reservation_status = data.reservation_status;
+      }
+      if (data.room_type !== item.room_type) {
+        payload.room_type = data.room_type;
+      }
+      if (data.guests !== item.guests) {
+        payload.guests = data.guests;
+      }
+
+      if (data.hotel_name === "" || data.hotel_name === item.hotel_name) {
+        payload.hotel_name = data.hotel_name;
+      }
+      if (data.userId !== item.userId) {
+        payload.userId = data.userId;
+      }
+      if (Object.keys(payload).length > 0) {
+        updateReservationMutation.mutate(payload as UpdateReservationDto);
+      }
+
       //   updateReservationMutation.mutate(data);
     } else {
       addReservationMutation.mutate(data);
@@ -135,8 +192,6 @@ const AddEditReservationDialog = ({
         guests: item.guests || 1,
         name: item.name || "",
       });
-    } else {
-      form.reset();
     }
   }, [item, form]);
 

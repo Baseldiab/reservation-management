@@ -28,11 +28,15 @@ import Loading from "@/components/common/loading";
 // components home admin
 import FilterReservations from "@/pages/home/home-admin/components/reservation-filter";
 import AdminReservationTableOptions from "@/pages/home/home-admin/components/reservation-table-options";
+import { Button } from "@/components/ui/button";
+import { PlusIcon } from "@radix-ui/react-icons";
+import AddEditReservationDialog from "./add-edit-reservation";
 
 export default function ReservationsTable() {
   // state
   const [currentPage, setCurrentPage] = React.useState(1);
   const PER_PAGE = 5;
+  const [isEditDialogOpen, setIsEditDialogOpen] = React.useState(false);
 
   // Queries
   const { data: filters } = useQuery<ReservationFilterParams>({
@@ -140,10 +144,19 @@ export default function ReservationsTable() {
 
   return (
     <section className="w-full bg-transparent rounded-3xl p-6 flex flex-col gap-6 container">
+      <h1 className="font-bold font-sans -mt-2 text-2xl max-md:w-full">
+        All Reservations
+      </h1>
       <article className="flex max-md:flex-col max-md:items-start items-center gap-6 !w-full justify-between">
-        <h1 className="font-bold font-sans -mt-2 text-2xl max-md:w-full">
-          All Reservations
-        </h1>
+        <Button
+          onClick={() => {
+            setIsEditDialogOpen(true);
+          }}
+          className="flex items-center font-medium select-none gap-2 h-[44px] w-[170px]"
+        >
+          <PlusIcon className="size-4 -mb-1 min-w-4 min-h-4" />
+          Add Reservation
+        </Button>
 
         <div className="flex max-md:!w-full max-md:flex-col max-md:items-start md:flex-1 justify-end items-center gap-4">
           <FilterReservations />
@@ -203,6 +216,12 @@ export default function ReservationsTable() {
           </PaginationContent>
         </Pagination>
       )}
+
+      <AddEditReservationDialog
+        item={null}
+        isDialogOpen={isEditDialogOpen}
+        setIsDialogOpen={setIsEditDialogOpen}
+      />
     </section>
   );
 }

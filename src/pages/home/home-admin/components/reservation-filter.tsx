@@ -74,7 +74,7 @@ function FilterReservations() {
     <div className="flex  items-center gap-4">
       {/* filter by */}
       <Popover open={filtersOpen} onOpenChange={setFiltersOpen}>
-        <PopoverTrigger className="!outline-none select-none bg-white">
+        <PopoverTrigger asChild>
           <Button
             variant="outline"
             className="flex items-center text-sm font-medium text-theme-icon-grey gap-2 p-0 h-[44px] w-[115px] border-theme-separating-border rounded-lg"

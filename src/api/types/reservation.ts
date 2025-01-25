@@ -49,7 +49,9 @@ export interface AddReservationDto {
 }
 
 export interface UpdateReservationDto {
-    hotel?: string;
+    userId?: string;
+    name?: string;
+    hotel_name?: string;
     check_in?: string;
     check_out?: string;
     reservation_status?: ReservationStatus; // user only can update status
