@@ -1,11 +1,16 @@
-import { NavbarMenu } from "@/components/navbar/menu-navbar";
+export interface NavbarMenu {
+    id: string;
+    link: string;
+    text: string;
+  }
 
 
 export const navbarMenuArray: NavbarMenu[] = [
   {
     link: "/",
     id: "home",
-    text: "Home",
+        text: "Home",
+    
   },
   {
     link: "/users",

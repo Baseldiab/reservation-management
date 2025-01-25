@@ -15,18 +15,12 @@ import { cn } from "@/lib/utils";
 import { useDimensions } from "@/hooks/use-dimensions";
 
 // constants
-import { navbarMenuArray } from "@/lib/constants/navbar";
+import { NavbarMenu, navbarMenuArray } from "@/lib/constants/navbar";
 
 // icons
 
-// ui components
-import LogoutBtn from "./logout-btn";
-
-export interface NavbarMenu {
-  id: string;
-  link: string;
-  text: string;
-}
+//components
+import LogoutBtn from "@/components/navbar/logout-btn";
 
 interface MenuNavbarProps {
   className?: string;
