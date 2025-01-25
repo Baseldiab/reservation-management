@@ -1,5 +1,6 @@
 import React from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
+import { formatDate } from "@/lib/utils";
 
 // lib imports
 import { ColumnDef } from "@tanstack/react-table";
@@ -7,17 +8,11 @@ import { ColumnDef } from "@tanstack/react-table";
 // asset imports
 
 // api
+import { getAllReservations } from "@/api/routes/reservation";
+import { Reservation, ReservationFilterParams } from "@/api/types/reservation";
 
 // Ui imports
 import { DataTable } from "@/components/ui/data-table";
-
-// components dialogs
-import Loading from "@/components/common/loading";
-import { useToast } from "@/hooks/use-toast";
-import FilterReservations from "./reservation-filter";
-import { getAllReservations } from "@/api/routes/reservation";
-import { Reservation, ReservationFilterParams } from "@/api/types/reservation";
-import { formatDate } from "@/lib/utils";
 import {
   Pagination,
   PaginationContent,
@@ -26,14 +21,15 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { Button } from "@/components/ui/button";
-import { Loader2, Trash2 } from "lucide-react";
-import { PencilIcon } from "lucide-react";
+
+// components
+import Loading from "@/components/common/loading";
+
+// components home admin
+import FilterReservations from "@/pages/home/home-admin/components/reservation-filter";
+import AdminReservationTableOptions from "@/pages/home/home-admin/components/reservation-table-options";
 
 export default function ReservationsTable() {
-  const queryClient = useQueryClient();
-  const { toast } = useToast();
-
   // state
   const [currentPage, setCurrentPage] = React.useState(1);
   const PER_PAGE = 5;
@@ -128,32 +124,7 @@ export default function ReservationsTable() {
       accessorKey: "options",
       header: () => <div className="text-start">Actions</div>,
       cell: ({ row }) => {
-        return (
-          <div className="flex items-center gap-4">
-            <Button
-              title="Edit"
-              onClick={() => {}}
-              disabled={false}
-              className="flex items-center font-medium select-none gap-2 border border-theme-separator !bg-transparent text-yellow-500 hover:!bg-yellow-500 hover:text-white size-8"
-            >
-              <PencilIcon className="size-5 -mb-1 min-w-4 min-h-4" />
-            </Button>
-            <Button
-              title="Delete"
-              disabled={false}
-              onClick={() => {}}
-              className="flex items-center font-medium select-none gap-2 border !bg-transparent hover:!bg-red-500 hover:text-white text-red-500 size-8"
-            >
-              {/* { ? (
-                <Loader2 className="size-4 animate-spin" />
-                ) : (
-                  <Trash2 className="size-4 -mb-1 min-w-4 min-h-4" />
-                  )} */}
-              <Trash2 className="size-4 -mb-1 min-w-4 min-h-4" />
-              <Loader2 className="size-4 animate-spin" />
-            </Button>
-          </div>
-        );
+        return <AdminReservationTableOptions item={row.original} />;
       },
     },
   ];

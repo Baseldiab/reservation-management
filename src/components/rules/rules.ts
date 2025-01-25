@@ -1,4 +1,4 @@
-import { Gender } from "@/api/enums/enums";
+import { Gender, ReservationStatus, RoomType } from "@/api/enums/enums";
 import { z } from "zod";
 
 export const paySchema = z.object({
@@ -42,15 +42,6 @@ export const paySchema = z.object({
       ),
   });
 
-  // name?: string,
-  // avatar?: string,
-  //                            // male or female
-  // address_city?: string,
-  // address_country?: string,
-  // user_type?: UserType,                           // admin or user
-  // email?: string,
-  // phone_number?: string,
-  // password?: string
 
 export const signUpSchema = z.object({
   name: z.string().min(3, "Name must be more than 3 characters"),
@@ -72,6 +63,52 @@ export const signUpSchema = z.object({
         /[@&'"*%$]/,
         "Password must contain at least one special character like @&'\"*%$"
       ),
-  });
+});
+  
+
+
+    // userId: string;
+    // hotel?: string;
+    // check_in?: string;
+    // check_out?: string;
+    // reservation_status?: ReservationStatus;
+    // room_type?: RoomType;
+    // guests?: number;
+// name?: string;   // user name
+    
+
+export const AddNewReservationSchemaForAdmin = z.object({
+  userId: z.string().min(1, "User ID is required"),
+  hotel: z.string().min(1, "Hotel name is required"),
+  check_in: z.string().datetime().refine(
+    (date) => {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      return new Date(date) > today;
+    },
+    { message: "Check-in date must be in the future" }
+  ),
+  check_out: z.string().datetime().refine(
+    () => {
+      return true; 
+    },
+    { message: "Check-out date is required" }
+  ),
+  reservation_status: z.nativeEnum(ReservationStatus),
+  room_type: z.nativeEnum(RoomType),
+  guests: z.number().min(1, "At least one guest is required").max(10, "Maximum 10 guests allowed"),
+  name: z.string().min(3, "Guest name must be at least 3 characters"),
+}).refine(
+  (data) => {
+    const checkIn = new Date(data.check_in);
+    const checkOut = new Date(data.check_out);
+    return checkOut > new Date(checkIn.getTime() + 24 * 60 * 60 * 1000);
+  },
+  {
+    message: "Check-out must be at least one day after check-in",
+    path: ["check_out"], 
+  }
+);
+
 
   export type UserModel = z.infer<typeof userSchema>;

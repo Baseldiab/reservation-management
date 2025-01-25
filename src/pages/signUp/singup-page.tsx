@@ -62,12 +62,6 @@ const SignUpPage = () => {
 
   const [selectedCode, setSelectedCode] = useState<string>("+20");
 
-  // const { data: user } = useQuery({
-  //   queryKey: ["user"],
-  //   retry: 1,
-  // });
-
-  // console.log(user, secureStorage.get());
   // Add form hook
   const form = useForm<SignUpFormValues>({
     resolver: zodResolver(signUpSchema),

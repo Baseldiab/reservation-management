@@ -39,7 +39,7 @@ export interface Reservation {
 
 export interface AddReservationDto {
     userId: string;
-    hotel?: string;
+    hotel_name?: string;
     check_in?: string;
     check_out?: string;
     reservation_status?: ReservationStatus;
