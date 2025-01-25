@@ -36,7 +36,7 @@ export function PhoneInput<T extends FieldValues>({
           defaultValue={defaultCountry}
           onValueChange={(value) => onCodeChange(value)}
         >
-          <SelectTrigger className="border-0 p-0 focus:ring-0">
+          <SelectTrigger className="border-0 p-0 focus:ring-0 shadow-none">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>

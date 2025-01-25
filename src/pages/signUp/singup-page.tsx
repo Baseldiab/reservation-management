@@ -41,6 +41,14 @@ import { PhoneInput } from "@/components/ui/extend/phone-number";
 
 // constants import
 import { COUNTRIES } from "@/lib/constants/countries";
+import {
+  Select,
+  SelectValue,
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
+import { Gender } from "@/api/enums/enums";
 
 type SignUpFormValues = z.infer<typeof signUpSchema>;
 
@@ -56,8 +64,13 @@ const SignUpPage = () => {
   const form = useForm<SignUpFormValues>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
+      name: "",
       email: "",
       password: "",
+      phone_number: "",
+      address_city: "",
+      address_country: "",
+      gender: Gender.MALE,
     },
   });
 
@@ -96,7 +109,7 @@ const SignUpPage = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-w-screen min-h-screen bg-theme-background-secondary">
+    <div className="flex justify-center items-center min-w-screen min-h-screen bg-theme-background-secondary dark:bg-theme-background-dark py-5">
       <div className="flex sm:w-[90%] w-[95%] max-w-[800px] px-[32px] flex-col items-start gap-8 pt-8 pb-[32px] rounded-2xl bg-theme-background-main dark:bg-theme-background-dark border border-theme-border-main dark:border-theme-border-dark">
         <div className="w-full flex flex-col items-center justify-center gap-6">
           {/* <img src={Logo} alt="logo" className="size-14" /> */}
@@ -232,6 +245,102 @@ const SignUpPage = () => {
                           id="password"
                           className="form-input"
                           placeholder="Enter your password"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="flex max-md:flex-col gap-4 items-center justify-start w-full">
+                {/* gender */}
+                <FormField
+                  control={form.control}
+                  name="gender"
+                  render={({ field }) => (
+                    <FormItem className="w-full md:basis-1/2">
+                      <Label
+                        htmlFor="gender"
+                        className="text-theme-inputField-label"
+                      >
+                        Gender
+                        <span className="text-theme-inputField-error mx-1">
+                          *
+                        </span>
+                      </Label>
+                      <FormControl>
+                        <Select
+                          onValueChange={(value) => field.onChange(value)}
+                          defaultValue={field.value}
+                        >
+                          <SelectTrigger className="h-12">
+                            <SelectValue placeholder="Select your gender" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value={Gender.MALE}>Male</SelectItem>
+                            <SelectItem value={Gender.FEMALE}>
+                              Female
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="flex max-md:flex-col gap-4 items-center justify-center w-full">
+                {/* address city */}
+                <FormField
+                  control={form.control}
+                  name="address_city"
+                  render={({ field }) => (
+                    <FormItem className="w-full">
+                      <Label
+                        htmlFor="address_city"
+                        className="text-theme-inputField-label"
+                      >
+                        Address city
+                        <span className="text-theme-inputField-error mx-1">
+                          *
+                        </span>
+                      </Label>
+                      <FormControl>
+                        <Input
+                          id="address_city"
+                          className="form-input rtl:pl-16"
+                          placeholder="Enter your address city"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* address country */}
+                <FormField
+                  control={form.control}
+                  name="address_country"
+                  render={({ field }) => (
+                    <FormItem className="w-full">
+                      <Label
+                        htmlFor="address_country"
+                        className="text-theme-inputField-label"
+                      >
+                        Address country
+                        <span className="text-theme-inputField-error mx-1">
+                          *
+                        </span>
+                      </Label>
+                      <FormControl>
+                        <Input
+                          id="address_country"
+                          className="form-input rtl:pl-16"
+                          placeholder="Enter your address country"
                           {...field}
                         />
                       </FormControl>
