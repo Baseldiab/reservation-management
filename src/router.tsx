@@ -25,7 +25,6 @@ import UserReservationDetailsPage from "@/pages/home/home-user/reservation[id]";
 
 // pages users
 import UsersPage from "@/pages/users/users-page";
-import UserDetailsPage from "@/pages/users/[id]";
 
 const AppRouter = () => {
   const router = createBrowserRouter([
@@ -60,10 +59,7 @@ const AppRouter = () => {
             {
               path: "/users",
               element: <AdminRoute />,
-              children: [
-                { path: "", element: <UsersPage /> },
-                { path: ":id", element: <UserDetailsPage /> },
-              ],
+              children: [{ path: "", element: <UsersPage /> }],
             },
           ],
         },

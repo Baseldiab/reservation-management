@@ -106,8 +106,8 @@ export default function ReservationTable({
       ...(!isUser
         ? [
             {
-              accessorKey: "User name",
-              header: () => <p className="text-start">Name</p>,
+              accessorKey: "User_name",
+              header: () => <p className="text-start">Username</p>,
               cell: ({ row }: { row: Row<Reservation> }) => {
                 return (
                   <div className="text-start font-medium ">

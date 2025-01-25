@@ -38,7 +38,7 @@ export default function Navbar() {
       id: "home",
       text: "Home",
     },
-    ...(user?.user_type === UserType.ADMIN
+    ...(user?.user_type === UserType.ADMIN || user?.user_type === "admin"
       ? [
           {
             link: "/users",
@@ -61,7 +61,8 @@ export default function Navbar() {
         </Link>
 
         {/* desktop menu */}
-        {user?.user_type === UserType.ADMIN && (
+        {(user?.user_type === UserType.ADMIN ||
+          user?.user_type === "admin") && (
           <ul className="flex justify-end items-end gap-8 text-theme-text-main dark:text-theme-text-dark font-semibold text-base md:text-xl max-lg:hidden">
             {navbarMenuArray.map((item) => (
               <li key={item.id} className="!p-0 !m-0 ">

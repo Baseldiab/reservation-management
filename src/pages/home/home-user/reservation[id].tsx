@@ -92,6 +92,7 @@ const AdminReservationDetailsPage = () => {
     onSuccess: (data) => {
       toast({
         description: "successfully added reservation",
+        variant: "success",
       });
       queryClient.setQueryData(
         ["all-reservations", filters],

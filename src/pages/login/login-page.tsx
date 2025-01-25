@@ -61,6 +61,7 @@ const LoginPage = () => {
       secureStorage.set(data[0]);
       toast({
         description: "successfully logged in",
+        variant: "success",
       });
       queryClient.invalidateQueries({ queryKey: ["user"] });
     },

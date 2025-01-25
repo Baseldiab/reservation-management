@@ -54,6 +54,7 @@ export default function AdminReservationTableOptions({
       );
       toast({
         title: "Deleted Reservation Successfully",
+        variant: "success",
       });
       setIsDeleteDialogOpen(false);
     },

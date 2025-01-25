@@ -111,6 +111,7 @@ const UserAddEditReservationDialog = ({
     onSuccess: (data) => {
       toast({
         description: "successfully added reservation",
+        variant: "success",
       });
       queryClient.setQueryData(
         ["my-reservations", filters, searchValue],
@@ -138,6 +139,7 @@ const UserAddEditReservationDialog = ({
     onSuccess: (data) => {
       toast({
         description: "successfully added reservation",
+        variant: "success",
       });
       queryClient.setQueryData(
         ["my-reservations", filters, searchValue],

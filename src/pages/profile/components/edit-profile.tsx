@@ -92,6 +92,7 @@ const UserForm = () => {
       secureStorage.set(data);
       toast({
         description: "successfully signed up",
+        variant: "success",
       });
       queryClient.invalidateQueries({ queryKey: ["user"] });
 

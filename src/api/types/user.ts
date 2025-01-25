@@ -6,7 +6,6 @@ export interface UsersParams {
   gender?: Gender;
   address_city?: string;
   address_country?: string;
-  user_type?: UserType;
   email?: string;
   phone_number?: string;
 }
