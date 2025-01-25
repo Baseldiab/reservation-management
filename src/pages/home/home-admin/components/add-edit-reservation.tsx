@@ -486,15 +486,19 @@ const AddEditReservationDialog = ({
 
                 {/* Submit Button */}
                 <Button
-                  disabled={addReservationMutation.isPending}
+                  disabled={
+                    addReservationMutation.isPending ||
+                    updateReservationMutation.isPending
+                  }
                   type="submit"
                   className="w-full h-[56px] font-medium text-base flex items-center gap-2"
                   variant="default"
                 >
                   {item ? "Update" : "Add"} Reservation
-                  {addReservationMutation.isPending && (
-                    <Loader2 className="size-4 animate-spin -mb-1" />
-                  )}
+                  {addReservationMutation.isPending ||
+                    (updateReservationMutation.isPending && (
+                      <Loader2 className="size-4 animate-spin -mb-1" />
+                    ))}
                 </Button>
               </form>
             </Form>

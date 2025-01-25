@@ -43,7 +43,7 @@ import {
 } from "@/components/ui/form";
 
 // asset imports
-import { Loader2 } from "lucide-react";
+import { CircleAlert, Loader2 } from "lucide-react";
 import { User } from "@/api/types/user";
 
 interface AddEditReservationProps {
@@ -79,9 +79,9 @@ const UserAddEditReservationDialog = ({
       hotel_name: "",
       check_in: "",
       check_out: "",
-      reservation_status: ReservationStatus.PENDING,
-      room_type: RoomType.SINGLE,
-      guests: 1,
+      reservation_status: item?.reservation_status || ReservationStatus.PENDING,
+      room_type: item?.room_type || RoomType.SINGLE,
+      guests: item?.guests || 1,
       name: "",
     },
   });
@@ -236,6 +236,16 @@ const UserAddEditReservationDialog = ({
           </DialogTitle>
 
           <div className="w-full sm:px-4 px-2  min-h-[300px] !text-theme-text-Body flex flex-col gap-6 mt-[72px] overflow-auto max-h-[80vh] my-3">
+            {item &&
+              item.reservation_status === ReservationStatus.CANCELLED && (
+                <div className="text-orange-700 p-2 border border-orange-500 rounded-lg bg-orange-500/10 my-2 flex justify-start items-center gap-2 flex-wrap">
+                  <CircleAlert />
+                  <p className="text-base font-medium">
+                    This reservation has been cancelled and cannot be edited.
+                  </p>
+                </div>
+              )}
+
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
@@ -263,6 +273,12 @@ const UserAddEditReservationDialog = ({
                             type="text"
                             className="form-input rtl:pl-16"
                             placeholder="Enter your hotel name"
+                            disabled={
+                              (item &&
+                                item.reservation_status ===
+                                  ReservationStatus.CANCELLED) ??
+                              false
+                            }
                             {...field}
                           />
                         </FormControl>
@@ -286,7 +302,16 @@ const UserAddEditReservationDialog = ({
                           Check in
                         </Label>
                         <FormControl>
-                          <Input type="date" {...field} />
+                          <Input
+                            type="date"
+                            {...field}
+                            disabled={
+                              (item &&
+                                item.reservation_status ===
+                                  ReservationStatus.CANCELLED) ??
+                              false
+                            }
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -306,7 +331,16 @@ const UserAddEditReservationDialog = ({
                           Check out
                         </Label>
                         <FormControl>
-                          <Input type="date" {...field} />
+                          <Input
+                            type="date"
+                            {...field}
+                            disabled={
+                              (item &&
+                                item.reservation_status ===
+                                  ReservationStatus.CANCELLED) ??
+                              false
+                            }
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -398,6 +432,12 @@ const UserAddEditReservationDialog = ({
                           <Select
                             onValueChange={(value) => field.onChange(value)}
                             defaultValue={field.value}
+                            disabled={
+                              (item &&
+                                item.reservation_status ===
+                                  ReservationStatus.CANCELLED) ??
+                              false
+                            }
                           >
                             <SelectTrigger className="h-12">
                               <SelectValue placeholder="Select room type" />
@@ -448,6 +488,12 @@ const UserAddEditReservationDialog = ({
                             onChange={(e) =>
                               field.onChange(Number(e.target.value))
                             }
+                            disabled={
+                              (item &&
+                                item.reservation_status ===
+                                  ReservationStatus.CANCELLED) ??
+                              false
+                            }
                           />
                         </FormControl>
                         <FormMessage />
@@ -458,15 +504,23 @@ const UserAddEditReservationDialog = ({
 
                 {/* Submit Button */}
                 <Button
-                  disabled={addReservationMutation.isPending}
+                  disabled={
+                    addReservationMutation.isPending ||
+                    updateReservationMutation.isPending ||
+                    ((item &&
+                      item.reservation_status ===
+                        ReservationStatus.CANCELLED) ??
+                      false )
+                  }
                   type="submit"
                   className="w-full h-[56px] font-medium text-base flex items-center gap-2"
                   variant="default"
                 >
                   {item ? "Update" : "Add"} Reservation
-                  {addReservationMutation.isPending && (
-                    <Loader2 className="size-4 animate-spin -mb-1" />
-                  )}
+                  {addReservationMutation.isPending ||
+                    (updateReservationMutation.isPending && (
+                      <Loader2 className="size-4 animate-spin -mb-1" />
+                    ))}
                 </Button>
               </form>
             </Form>

@@ -73,9 +73,9 @@ const AdminReservationDetailsPage = () => {
       hotel_name: "",
       check_in: "",
       check_out: "",
-      reservation_status: ReservationStatus.PENDING,
-      room_type: RoomType.SINGLE,
-      guests: 1,
+      reservation_status: item?.reservation_status || ReservationStatus.PENDING,
+      room_type: item?.room_type || RoomType.SINGLE,
+      guests: item?.guests || 1,
       name: "",
     },
   });
@@ -210,6 +210,11 @@ const AdminReservationDetailsPage = () => {
                         </Label>
                         <FormControl>
                           <Input
+                            disabled={
+                              item &&
+                              item.reservation_status ===
+                                ReservationStatus.CANCELLED
+                            }
                             id="hotel_name"
                             type="text"
                             className="form-input rtl:pl-16"
@@ -237,7 +242,15 @@ const AdminReservationDetailsPage = () => {
                           Check in
                         </Label>
                         <FormControl>
-                          <Input type="date" {...field} />
+                          <Input
+                            disabled={
+                              item &&
+                              item.reservation_status ===
+                                ReservationStatus.CANCELLED
+                            }
+                            type="date"
+                            {...field}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -257,7 +270,15 @@ const AdminReservationDetailsPage = () => {
                           Check out
                         </Label>
                         <FormControl>
-                          <Input type="date" {...field} />
+                          <Input
+                            disabled={
+                              item &&
+                              item.reservation_status ===
+                                ReservationStatus.CANCELLED
+                            }
+                            type="date"
+                            {...field}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -287,8 +308,9 @@ const AdminReservationDetailsPage = () => {
                               onValueChange={(value) => field.onChange(value)}
                               defaultValue={field.value}
                               disabled={
+                                item &&
                                 item.reservation_status !==
-                                ReservationStatus.PENDING
+                                  ReservationStatus.PENDING
                               }
                             >
                               <SelectTrigger className="h-12">
@@ -348,6 +370,10 @@ const AdminReservationDetailsPage = () => {
                           <Select
                             onValueChange={(value) => field.onChange(value)}
                             defaultValue={field.value}
+                            disabled={
+                              item.reservation_status ===
+                              ReservationStatus.CANCELLED
+                            }
                           >
                             <SelectTrigger className="h-12">
                               <SelectValue placeholder="Select room type" />
@@ -390,6 +416,11 @@ const AdminReservationDetailsPage = () => {
                         </Label>
                         <FormControl>
                           <Input
+                            disabled={
+                              item &&
+                              item.reservation_status ===
+                                ReservationStatus.CANCELLED
+                            }
                             id="guests"
                             type="number"
                             className="form-input rtl:pl-16"
