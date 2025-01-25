@@ -5,16 +5,20 @@ import Layout from "@/components/layout/layout";
 
 // components auth
 import AuthedRoute from "@/components/auth/authed-route";
+import UnauthedRoute from "@/components/auth/unauthed-route";
 
 // Pages
 import ErrorElement from "@/components/error/error";
+
 // pages auth
 import LoginPage from "@/pages/login/login-page";
 import SignUpPage from "@/pages/signUp/singup-page";
 
 // pages home
 import HomePage from "@/pages/home/home-page";
-import UnauthedRoute from "@/components/auth/unauthed-route";
+import ProfilePage from "@/pages/profile/profile-page";
+
+// pages users
 import UsersPage from "@/pages/users/users-page";
 
 const AppRouter = () => {
@@ -35,6 +39,10 @@ const AppRouter = () => {
             {
               path: "/users",
               element: <UsersPage />,
+            },
+            {
+              path: "/profile",
+              element: <ProfilePage />,
             },
           ],
         },

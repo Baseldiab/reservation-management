@@ -1,6 +1,6 @@
 import { Moon } from "lucide-react";
 import { Sun } from "lucide-react";
-import { useTheme } from "@/components/provideres/theme-provider";
+import { useTheme } from "@/hooks/use-theme";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 

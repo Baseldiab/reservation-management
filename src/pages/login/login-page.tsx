@@ -25,7 +25,7 @@ import {
 // assets import
 import { Loader2 } from "lucide-react";
 import MainLogoIcon from "@/components/icons/MainLogoIcon";
-import { useTheme } from "@/components/provideres/theme-provider";
+import { useTheme } from "@/hooks/use-theme";
 
 // rules import
 import { loginSchema } from "@/components/rules/rules";

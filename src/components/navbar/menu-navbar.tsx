@@ -1,10 +1,8 @@
 // react
 import React, { useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useQueryClient } from "@tanstack/react-query";
+import { Link } from "react-router-dom";
 
 // utils
-import { secureStorage } from "@/utils/secure-storage";
 
 // framer-motion imports
 import type { Variants } from "framer-motion";
@@ -20,10 +18,9 @@ import { useDimensions } from "@/hooks/use-dimensions";
 import { navbarMenuArray } from "@/lib/constants/navbar";
 
 // icons
-import { LogOut } from "lucide-react";
 
 // ui components
-import { Button } from "@/components/ui/button";
+import LogoutBtn from "./logout-btn";
 
 export interface NavbarMenu {
   id: string;
@@ -152,8 +149,6 @@ const Navigation = ({
   setActiveSection: (section: string) => void;
 }) => {
   // Memoize the navigation items to prevent unnecessary re-renders
-  const navigate = useNavigate();
-  const queryClient = useQueryClient();
   const memoizedItems = React.useMemo(() => items, [items]);
 
   return (
@@ -175,18 +170,7 @@ const Navigation = ({
         whileTap={{ scale: 0.95 }}
         className="mb-4 font-bold text-base md:text-xl"
       >
-        <Button
-          className="rounded-xl p-2 h-10 w-full  !bg-gray-200 dark:!bg-gray-800 !border-none focus:outline-none flex justify-center items-center gap-2 text-slate-900 dark:text-white font-bold text-base md:text-xl"
-          title="Logout"
-          onClick={() => {
-            secureStorage.remove();
-            queryClient.invalidateQueries({ queryKey: ["user"] });
-            navigate("/login");
-          }}
-        >
-          <LogOut className="sm:size-6 size-4 text-slate-900 dark:text-white" />
-          logout
-        </Button>
+        <LogoutBtn className="rounded-xl p-2 h-10 w-full  !bg-gray-200 dark:!bg-gray-800 !border-none focus:outline-none flex justify-center items-center gap-2 text-slate-900 dark:text-white font-bold text-base md:text-xl" />
       </motion.li>
     </motion.ul>
   );

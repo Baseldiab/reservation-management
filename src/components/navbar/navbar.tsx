@@ -1,35 +1,36 @@
-import { Link, useLocation, useNavigate, NavLink } from "react-router-dom";
+import { Link, useLocation, NavLink, useNavigate } from "react-router-dom";
 import clsx from "clsx";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 
 // constants
 import { navbarMenuArray } from "@/lib/constants/navbar";
 
 // assets
 import MainLogoIcon from "@/components/icons/MainLogoIcon";
-import { LogOut } from "lucide-react";
+import { User as ProfileImg } from "lucide-react";
 
 // hooks
-import { useTheme } from "@/components/provideres/theme-provider";
+import { useTheme } from "@/hooks/use-theme";
 
 // ui imports
-import { Button } from "../ui/button";
-
-// utils imports
-import { secureStorage } from "@/utils/secure-storage";
+import { Button } from "@/components/ui/button";
 
 // components imports
 import BreathAnimation from "@/components/common/breath-animation";
 import MenuNavbar from "@/components/navbar/menu-navbar";
 import ThemeToggle from "@/components/navbar/theme_toggle";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import LogoutBtn from "@/components/navbar/logout-btn";
 
 export default function Navbar() {
   const { theme } = useTheme();
-
   const navigate = useNavigate();
   const location = useLocation();
-  const queryClient = useQueryClient();
+
+  const { data: user } = useQuery({
+    queryKey: ["user"],
+  });
+
+  console.log(user);
 
   return (
     <nav className="my-4">
@@ -64,26 +65,27 @@ export default function Navbar() {
 
         <div className="flex items-center gap-2">
           <ThemeToggle />
-
-          <Button
-            className="rounded-xl p-2 h-10 w-fit  !bg-gray-200 dark:!bg-gray-800 !border-none focus:outline-none flex justify-center items-center gap-2 text-slate-900 dark:text-white max-lg:hidden"
-            title="Logout"
-            onClick={() => {
-              secureStorage.remove();
-              queryClient.invalidateQueries({ queryKey: ["user"] });
-              navigate("/login");
-            }}
-          >
-            <LogOut className="size-5 text-slate-900 dark:text-white" />
-            logout
-          </Button>
+          <BreathAnimation>
+            <LogoutBtn className="max-lg:hidden" />
+          </BreathAnimation>
 
           <MenuNavbar className={`lg:hidden`} />
 
-          <Avatar>
-            <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-            <AvatarFallback>CN</AvatarFallback>
-          </Avatar>
+          {/* <Avatar className="size-10 !bg-gray-200 dark:!bg-gray-800">
+            <AvatarFallback className="text-slate-900 dark:text-white font-semibold text-base"></AvatarFallback>
+          </Avatar> */}
+
+          <BreathAnimation>
+            <Button
+              className={
+                "rounded-full p-2 size-10  !bg-gray-200 dark:!bg-gray-800 !border-none focus:outline-none flex justify-center items-center gap-2 text-slate-900 dark:text-white "
+              }
+              title="Logout"
+              onClick={() => navigate("/profile")}
+            >
+              <ProfileImg className="size-5 text-slate-900 dark:text-white" />
+            </Button>
+          </BreathAnimation>
         </div>
       </div>
     </nav>

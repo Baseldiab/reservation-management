@@ -28,7 +28,7 @@ import { Loader2 } from "lucide-react";
 import MainLogoIcon from "@/components/icons/MainLogoIcon";
 
 // hooks import
-import { useTheme } from "@/components/provideres/theme-provider";
+import { useTheme } from "@/hooks/use-theme";
 
 // rules import
 import { signUpSchema } from "@/components/rules/rules";
