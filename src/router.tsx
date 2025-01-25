@@ -14,7 +14,8 @@ import SignUpPage from "@/pages/signUp/singup-page";
 
 // pages home
 import HomePage from "@/pages/home/home-page";
-import UnauthedRoute from "./components/auth/unauthed-route";
+import UnauthedRoute from "@/components/auth/unauthed-route";
+import UsersPage from "@/pages/users/users-page";
 
 const AppRouter = () => {
   const router = createBrowserRouter([
@@ -30,6 +31,10 @@ const AppRouter = () => {
             {
               path: "",
               element: <HomePage />,
+            },
+            {
+              path: "/users",
+              element: <UsersPage />,
             },
           ],
         },

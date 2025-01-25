@@ -1,22 +1,36 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate, NavLink } from "react-router-dom";
+import clsx from "clsx";
+import { useQueryClient } from "@tanstack/react-query";
 
-// components
-import ThemeToggle from "@/components/navbar/theme_toggle";
+// constants
+import { navbarMenuArray } from "@/lib/constants/navbar";
 
 // assets
 import MainLogoIcon from "@/components/icons/MainLogoIcon";
+import { LogOut } from "lucide-react";
 
 // hooks
 import { useTheme } from "@/components/provideres/theme-provider";
+
+// ui imports
 import { Button } from "../ui/button";
-import { LogOut } from "lucide-react";
+
+// utils imports
 import { secureStorage } from "@/utils/secure-storage";
-import { useQueryClient } from "@tanstack/react-query";
+
+// components imports
+import BreathAnimation from "@/components/common/breath-animation";
+import MenuNavbar from "@/components/navbar/menu-navbar";
+import ThemeToggle from "@/components/navbar/theme_toggle";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 export default function Navbar() {
   const { theme } = useTheme();
+
   const navigate = useNavigate();
+  const location = useLocation();
   const queryClient = useQueryClient();
+
   return (
     <nav className="my-4">
       <div className="flex justify-between items-center container py-4 sm:px-8 px-6 bg-theme-background-main dark:bg-theme-background-dark rounded-full  border border-grey-200 dark:border-grey-200">
@@ -29,31 +43,30 @@ export default function Navbar() {
         </Link>
 
         {/* desktop menu */}
-        {/* <ul className="flex justify-end items-end gap-8 text-theme-text-main dark:text-theme-text-dark font-bold text-base md:text-xl max-lg:hidden">
+        <ul className="flex justify-end items-end gap-8 text-theme-text-main dark:text-theme-text-dark font-semibold text-base md:text-xl max-lg:hidden">
           {navbarMenuArray.map((item) => (
             <li key={item.id} className="!p-0 !m-0 ">
               <BreathAnimation>
-                <Link
-                  href={item.link}
-                  onClick={() => setActiveSection(item.id)}
+                <NavLink
+                  to={item.link}
                   className={clsx(
                     "hover:underline link-hover  uppercase",
-                    activeSection === item.id &&
-                      "text-accent text-gradient dark:text-gradient"
+                    location.pathname === item.link &&
+                      "underline underline-offset-2 text-theme-text-primary dark:text-theme-text-primary"
                   )}
                 >
-                  {t(item.text)}
-                </Link>
+                  {item.text}
+                </NavLink>
               </BreathAnimation>
             </li>
           ))}
-        </ul> */}
+        </ul>
 
         <div className="flex items-center gap-2">
           <ThemeToggle />
 
           <Button
-            className="rounded-xl p-2 h-10 w-fit  !bg-gray-200 dark:!bg-gray-800 !border-none focus:outline-none flex justify-center items-center gap-2 text-slate-900 dark:text-white"
+            className="rounded-xl p-2 h-10 w-fit  !bg-gray-200 dark:!bg-gray-800 !border-none focus:outline-none flex justify-center items-center gap-2 text-slate-900 dark:text-white max-lg:hidden"
             title="Logout"
             onClick={() => {
               secureStorage.remove();
@@ -65,7 +78,12 @@ export default function Navbar() {
             logout
           </Button>
 
-          {/* <MenuNavbar  className={`lg:hidden`} /> */}
+          <MenuNavbar className={`lg:hidden`} />
+
+          <Avatar>
+            <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+            <AvatarFallback>CN</AvatarFallback>
+          </Avatar>
         </div>
       </div>
     </nav>

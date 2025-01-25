@@ -1,9 +1,10 @@
 // react
-import { useRef, useState } from "react";
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useRef, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 
-// hooks
+// utils
+import { secureStorage } from "@/utils/secure-storage";
 
 // framer-motion imports
 import type { Variants } from "framer-motion";
@@ -18,6 +19,12 @@ import { useDimensions } from "@/hooks/use-dimensions";
 // constants
 import { navbarMenuArray } from "@/lib/constants/navbar";
 
+// icons
+import { LogOut } from "lucide-react";
+
+// ui components
+import { Button } from "@/components/ui/button";
+
 export interface NavbarMenu {
   id: string;
   link: string;
@@ -26,10 +33,9 @@ export interface NavbarMenu {
 
 interface MenuNavbarProps {
   className?: string;
-  locale: string;
 }
 
-export default function MenuNavbar({ className, locale }: MenuNavbarProps) {
+export default function MenuNavbar({ className }: MenuNavbarProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const { height } = useDimensions(containerRef);
 
@@ -49,7 +55,7 @@ export default function MenuNavbar({ className, locale }: MenuNavbarProps) {
       },
     },
     closed: {
-      x: locale === "ar" ? "-100%" : "100%",
+      x: "100%",
       y: "-100%",
       transition: {
         delay: 0.2,
@@ -84,7 +90,7 @@ export default function MenuNavbar({ className, locale }: MenuNavbarProps) {
           className={cn(
             "fixed end-0 top-0 h-full w-[300px] bg-white dark:bg-black border-l z-50 shadow-xl"
           )}
-          dir={locale === "ar" ? "rtl" : "ltr"}
+          dir={"ltr"}
           variants={sidebarVariants}
           initial="closed"
           animate={isOpen ? "open" : "closed"}
@@ -146,6 +152,8 @@ const Navigation = ({
   setActiveSection: (section: string) => void;
 }) => {
   // Memoize the navigation items to prevent unnecessary re-renders
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const memoizedItems = React.useMemo(() => items, [items]);
 
   return (
@@ -159,6 +167,27 @@ const Navigation = ({
           label={item.text}
         />
       ))}
+
+      <motion.li
+        style={listItem}
+        variants={itemVariants}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        className="mb-4 font-bold text-base md:text-xl"
+      >
+        <Button
+          className="rounded-xl p-2 h-10 w-full  !bg-gray-200 dark:!bg-gray-800 !border-none focus:outline-none flex justify-center items-center gap-2 text-slate-900 dark:text-white font-bold text-base md:text-xl"
+          title="Logout"
+          onClick={() => {
+            secureStorage.remove();
+            queryClient.invalidateQueries({ queryKey: ["user"] });
+            navigate("/login");
+          }}
+        >
+          <LogOut className="sm:size-6 size-4 text-slate-900 dark:text-white" />
+          logout
+        </Button>
+      </motion.li>
     </motion.ul>
   );
 };
