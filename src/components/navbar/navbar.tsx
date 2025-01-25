@@ -28,11 +28,32 @@ export default function Navbar() {
           )}
         </Link>
 
+        {/* desktop menu */}
+        {/* <ul className="flex justify-end items-end gap-8 text-theme-text-main dark:text-theme-text-dark font-bold text-base md:text-xl max-lg:hidden">
+          {navbarMenuArray.map((item) => (
+            <li key={item.id} className="!p-0 !m-0 ">
+              <BreathAnimation>
+                <Link
+                  href={item.link}
+                  onClick={() => setActiveSection(item.id)}
+                  className={clsx(
+                    "hover:underline link-hover  uppercase",
+                    activeSection === item.id &&
+                      "text-accent text-gradient dark:text-gradient"
+                  )}
+                >
+                  {t(item.text)}
+                </Link>
+              </BreathAnimation>
+            </li>
+          ))}
+        </ul> */}
+
         <div className="flex items-center gap-2">
           <ThemeToggle />
 
           <Button
-            className="rounded-full p-2 size-10 !bg-gray-200 dark:!bg-gray-800 !border-none focus:outline-none"
+            className="rounded-xl p-2 h-10 w-fit  !bg-gray-200 dark:!bg-gray-800 !border-none focus:outline-none flex justify-center items-center gap-2 text-slate-900 dark:text-white"
             title="Logout"
             onClick={() => {
               secureStorage.remove();
@@ -40,8 +61,11 @@ export default function Navbar() {
               navigate("/login");
             }}
           >
-            <LogOut />
+            <LogOut className="size-5 text-slate-900 dark:text-white" />
+            logout
           </Button>
+
+          {/* <MenuNavbar  className={`lg:hidden`} /> */}
         </div>
       </div>
     </nav>
