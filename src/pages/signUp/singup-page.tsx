@@ -130,7 +130,7 @@ const SignUpPage = () => {
             <MainLogoIcon fill="#fff" className="md:w-48 w-40" />
           )}
           <div className="flex flex-col gap-2 items-center justify-center">
-            <h2 className="text-2xl lg:text-[32px] font-bold text-theme-text-title">
+            <h2 className="text-2xl lg:text-[32px] font-bold text-theme-text-title dark:text-theme-text-dark">
               Sign up
             </h2>
             <p className="text-theme-text-subtitle text-center">

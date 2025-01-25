@@ -46,10 +46,16 @@ export function PhoneInput<T extends FieldValues>({
                 value={country.code}
                 className="flex items-center justify-between gap-3"
               >
-                <span className="text-theme-text-title" dir="ltr">
+                <span
+                  className="text-theme-text-title dark:text-theme-text-dark"
+                  dir="ltr"
+                >
                   {country.code}
                 </span>
-                <span className="text-theme-text-title" dir="ltr">
+                <span
+                  className="text-theme-text-title dark:text-theme-text-dark"
+                  dir="ltr"
+                >
                   {country.dial}
                 </span>
               </SelectItem>

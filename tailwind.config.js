@@ -60,7 +60,7 @@ export default {
   				},
           button: {
             primary: '#3394d0',
-            dark: '#3394d0',
+            dark: '#3394d0cc',
           }
           },	
         background: 'hsl(var(--background))',

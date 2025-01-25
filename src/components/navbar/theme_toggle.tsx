@@ -37,6 +37,7 @@ export default function ThemeToggle() {
     >
       <motion.div
         initial={false}
+        title="Toggle Theme"
         className="relative w-full h-full !border-none"
         onClick={() => {
           setTheme(theme === "dark" ? "light" : "dark");

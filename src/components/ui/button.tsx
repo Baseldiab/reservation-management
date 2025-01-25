@@ -10,7 +10,7 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "!bg-theme-button-primary text-white shadow hover:bg-theme-button-primary/90",
+          "!bg-theme-button-primary text-white dark:!bg-theme-button-dark shadow hover:bg-theme-button-primary/90 dark:hover:!bg-theme-button-dark/90",
         destructive:
           "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
         outline:
@@ -54,4 +54,5 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 );
 Button.displayName = "Button";
 
+// eslint-disable-next-line react-refresh/only-export-components
 export { Button, buttonVariants };
