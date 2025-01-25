@@ -7,7 +7,7 @@ import { z } from "zod";
 import { secureStorage } from "@/utils/secure-storage";
 
 // api imports
-import { login } from "@/api/routes/user";
+import { signUp } from "@/api/routes/user";
 
 // ui imports
 import { Button } from "@/components/ui/button";
@@ -25,15 +25,24 @@ import {
 // assets import
 import { Loader2 } from "lucide-react";
 import MainLogoIcon from "@/components/icons/MainLogoIcon";
+
+// hooks import
 import { useTheme } from "@/components/provideres/theme-provider";
 
 // rules import
-import { loginSchema } from "@/components/rules/rules";
+import { signUpSchema } from "@/components/rules/rules";
 
 // login components
-import LoginFooter from "@/pages/login/components/login-footer";
+import SignUpFooter from "@/pages/signUp/components/signup-footer";
+import { useState } from "react";
 
-type LoginFormValues = z.infer<typeof loginSchema>;
+// Add import for PhoneInput
+import { PhoneInput } from "@/components/ui/extend/phone-number";
+
+// constants import
+import { COUNTRIES } from "@/lib/constants/countries";
+
+type SignUpFormValues = z.infer<typeof signUpSchema>;
 
 const SignUpPage = () => {
   const { theme } = useTheme();
@@ -41,46 +50,54 @@ const SignUpPage = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
+  const [selectedCode, setSelectedCode] = useState<string>("+20");
+
   // Add form hook
-  const form = useForm<LoginFormValues>({
-    resolver: zodResolver(loginSchema),
+  const form = useForm<SignUpFormValues>({
+    resolver: zodResolver(signUpSchema),
     defaultValues: {
       email: "",
       password: "",
     },
   });
 
-  const loginMutation = useMutation({
-    mutationKey: ["login"],
-    mutationFn: (data: LoginFormValues) =>
-      login({
+  const signUpMutation = useMutation({
+    mutationKey: ["signUp"],
+    mutationFn: (data: SignUpFormValues) =>
+      signUp({
+        name: data.name,
         email: data.email,
         password: data.password,
+        gender: data.gender,
+        phone_number: `${selectedCode}${data.phone_number}`,
+        address_city: data.address_city,
+        address_country: data.address_country,
       }),
     onSuccess: (data) => {
-      secureStorage.set(data[0]);
+      secureStorage.set(data);
       toast({
-        description: "successfully logged in",
+        description: "successfully signed up",
       });
       queryClient.invalidateQueries({ queryKey: ["user"] });
     },
     onError: (error) => {
       toast({
         variant: "destructive",
-        title: "Your Email or password is incorrect",
+        title:
+          "Something went wrong please try again or check your internet connection",
         description: error.message,
       });
     },
   });
 
   // Update handle login
-  const onSubmit = (data: LoginFormValues) => {
-    loginMutation.mutate(data);
+  const onSubmit = (data: SignUpFormValues) => {
+    signUpMutation.mutate(data);
   };
 
   return (
     <div className="flex justify-center items-center min-w-screen min-h-screen bg-theme-background-secondary">
-      <div className="flex w-[448px] max-w-md px-[32px] flex-col items-start gap-8 pt-8 pb-[32px] rounded-2xl bg-theme-background-main dark:bg-theme-background-dark border border-theme-border-main dark:border-theme-border-dark">
+      <div className="flex sm:w-[90%] w-[95%] max-w-[800px] px-[32px] flex-col items-start gap-8 pt-8 pb-[32px] rounded-2xl bg-theme-background-main dark:bg-theme-background-dark border border-theme-border-main dark:border-theme-border-dark">
         <div className="w-full flex flex-col items-center justify-center gap-6">
           {/* <img src={Logo} alt="logo" className="size-14" /> */}
 
@@ -91,7 +108,7 @@ const SignUpPage = () => {
           )}
           <div className="flex flex-col gap-2 items-center justify-center">
             <h2 className="text-2xl lg:text-[32px] font-bold text-theme-text-title">
-              Login
+              Sign up
             </h2>
             <p className="text-theme-text-subtitle text-center">
               Please enter your details to get started
@@ -103,79 +120,143 @@ const SignUpPage = () => {
               onSubmit={form.handleSubmit(onSubmit)}
               className="w-full flex flex-col gap-6 items-start mt-4"
             >
-              {/* Email */}
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <Label
-                      htmlFor="email"
-                      className="text-theme-inputField-label"
-                    >
-                      Email
-                      <span className="text-theme-inputField-error mx-1">
-                        *
-                      </span>
-                    </Label>
-                    <FormControl>
-                      <Input
-                        id="email"
-                        type="email"
-                        className="form-input rtl:pl-16"
-                        placeholder="Enter your email"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="flex max-md:flex-col gap-4 items-center justify-center w-full">
+                {/* name */}
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem className="w-full">
+                      <Label
+                        htmlFor="name"
+                        className="text-theme-inputField-label"
+                      >
+                        Name
+                        <span className="text-theme-inputField-error mx-1">
+                          *
+                        </span>
+                      </Label>
+                      <FormControl>
+                        <Input
+                          id="name"
+                          className="form-input rtl:pl-16"
+                          placeholder="Enter your name"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              {/* Password */}
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <Label
-                      htmlFor="password"
-                      className="text-theme-inputField-label"
-                    >
-                      Password
-                      <span className="text-theme-inputField-error mx-1">
-                        *
-                      </span>
-                    </Label>
-                    <FormControl>
-                      <Password
-                        id="password"
-                        className="form-input"
-                        placeholder="Enter your password"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                {/* Email */}
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem className="w-full">
+                      <Label
+                        htmlFor="email"
+                        className="text-theme-inputField-label"
+                      >
+                        Email
+                        <span className="text-theme-inputField-error mx-1">
+                          *
+                        </span>
+                      </Label>
+                      <FormControl>
+                        <Input
+                          id="email"
+                          type="email"
+                          className="form-input rtl:pl-16"
+                          placeholder="Enter your email"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
-              {/* Login Button */}
+              <div className="flex max-md:flex-col gap-4 items-center justify-center w-full">
+                {/* phone number */}
+                <FormField
+                  control={form.control}
+                  name="phone_number"
+                  render={({ field }) => (
+                    <FormItem className="w-full">
+                      <Label
+                        htmlFor="phone_number"
+                        className="text-theme-inputField-label"
+                      >
+                        Phone number
+                        <span className="text-theme-inputField-error mx-1">
+                          *
+                        </span>
+                      </Label>
+                      <FormControl>
+                        <PhoneInput
+                          field={field}
+                          onCodeChange={(value) => {
+                            const country = COUNTRIES.find(
+                              (c) => c.code === value
+                            );
+                            setSelectedCode(country?.dial || "+20");
+                          }}
+                          defaultCountry="EG"
+                          placeholder="Enter your Phone number"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                {/* Password */}
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem className="w-full">
+                      <Label
+                        htmlFor="password"
+                        className="text-theme-inputField-label"
+                      >
+                        Password
+                        <span className="text-theme-inputField-error mx-1">
+                          *
+                        </span>
+                      </Label>
+                      <FormControl>
+                        <Password
+                          id="password"
+                          className="form-input"
+                          placeholder="Enter your password"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              {/* Sign Up Button */}
               <Button
-                disabled={loginMutation.isPending}
+                disabled={signUpMutation.isPending}
                 type="submit"
                 className="w-full h-[56px] font-medium text-base flex items-center gap-2"
                 variant="default"
               >
-                Login
-                {loginMutation.isPending && (
+                Sign Up
+                {signUpMutation.isPending && (
                   <Loader2 className="size-4 animate-spin -mb-1" />
                 )}
               </Button>
             </form>
           </Form>
 
-          <LoginFooter />
+          <SignUpFooter />
         </div>
       </div>
     </div>

@@ -80,7 +80,7 @@ const LoginPage = () => {
 
   return (
     <div className="flex justify-center items-center min-w-screen min-h-screen bg-theme-background-secondary">
-      <div className="flex w-[448px] max-w-md px-[32px] flex-col items-start gap-8 pt-8 pb-[32px] rounded-2xl bg-theme-background-main dark:bg-theme-background-dark border border-theme-border-main dark:border-theme-border-dark">
+      <div className="flex w-[448px] max-sm:w-[95%] max-w-md px-[32px] flex-col items-start gap-8 pt-8 pb-[32px] rounded-2xl bg-theme-background-main dark:bg-theme-background-dark border border-theme-border-main dark:border-theme-border-dark">
         <div className="w-full flex flex-col items-center justify-center gap-6">
           {/* <img src={Logo} alt="logo" className="size-14" /> */}
 

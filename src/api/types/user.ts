@@ -26,23 +26,19 @@ export interface User {
   id: string;
 }
 
-
 export interface GetProfileSchema {
   password: string;
   email: string;
 }
 
-
-
-
 export type UserDto = {
-    created_at: string,   
+    created_at?: string,   
     name: string,
-    avatar: string,
+    avatar?: string,
     gender: Gender,                            // male or female
     address_city: string,
     address_country: string,
-    user_type: UserType,                           // admin or user
+    user_type?: UserType,                           // admin or user
     email: string,
     phone_number: string,
     password: string

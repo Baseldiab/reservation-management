@@ -50,6 +50,13 @@ export default {
             success: "#0ebb69",
             border: "#e6e6e6",
           },
+          separating: {
+  					border: '#efefef',
+  					separator: '#e6e6e6',
+  					'separator-2': '#DFE5F1',
+  					select: '#3394d0',
+  					'neutral-separator': '#F5F6F6'
+  				},
           button: {
             primary: '#3394d0',
             dark: '#3394d0',

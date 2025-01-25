@@ -11,7 +11,7 @@ export function Password(props: React.InputHTMLAttributes<HTMLInputElement>) {
   };
 
   return (
-    <div className="relative flex items-center w-full max-w-sm">
+    <div className="relative flex items-center w-full">
       <Input
         type={showPassword ? "text" : "password"}
         placeholder={props.placeholder || "Enter your password"}
