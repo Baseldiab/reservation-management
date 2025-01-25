@@ -1,6 +1,6 @@
 // lib imports
 import { useToast } from "@/hooks/use-toast";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -62,12 +62,12 @@ const SignUpPage = () => {
 
   const [selectedCode, setSelectedCode] = useState<string>("+20");
 
-  const { data: user } = useQuery({
-    queryKey: ["user"],
-    retry: 1,
-  });
+  // const { data: user } = useQuery({
+  //   queryKey: ["user"],
+  //   retry: 1,
+  // });
 
-  console.log(user, secureStorage.get());
+  // console.log(user, secureStorage.get());
   // Add form hook
   const form = useForm<SignUpFormValues>({
     resolver: zodResolver(signUpSchema),

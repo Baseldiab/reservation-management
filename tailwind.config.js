@@ -42,6 +42,7 @@ export default {
           },
           inputField: {
             label: "#3d3d3d",
+            darkLabel: "rgb(255 255 255 / 0.5)",
             placeholder: "#989898",
             placehold: "#6B7280",
             disable: "#e6e6e6",

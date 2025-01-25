@@ -79,7 +79,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-w-screen min-h-screen bg-theme-background-secondary">
+    <div className="flex justify-center items-center min-w-screen min-h-screen bg-theme-background-secondary dark:bg-theme-background-dark">
       <div className="flex w-[448px] max-sm:w-[95%] max-w-md px-[32px] flex-col items-start gap-8 pt-8 pb-[32px] rounded-2xl bg-theme-background-main dark:bg-theme-background-dark border border-theme-border-main dark:border-theme-border-dark">
         <div className="w-full flex flex-col items-center justify-center gap-6">
           {/* <img src={Logo} alt="logo" className="size-14" /> */}
@@ -90,7 +90,7 @@ const LoginPage = () => {
             <MainLogoIcon fill="#fff" className="md:w-48 w-40" />
           )}
           <div className="flex flex-col gap-2 items-center justify-center">
-            <h2 className="text-2xl lg:text-[32px] font-bold text-theme-text-title">
+            <h2 className="text-2xl lg:text-[32px] font-bold text-theme-text-title dark:text-theme-text-dark">
               Login
             </h2>
             <p className="text-theme-text-subtitle text-center">
@@ -109,10 +109,7 @@ const LoginPage = () => {
                 name="email"
                 render={({ field }) => (
                   <FormItem className="w-full">
-                    <Label
-                      htmlFor="email"
-                      className="text-theme-inputField-label"
-                    >
+                    <Label htmlFor="email">
                       Email
                       <span className="text-theme-inputField-error mx-1">
                         *
