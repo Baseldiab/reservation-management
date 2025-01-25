@@ -14,6 +14,7 @@ import SignUpPage from "@/pages/signUp/singup-page";
 
 // pages home
 import HomePage from "@/pages/home/home-page";
+import UnauthedRoute from "./components/auth/unauthed-route";
 
 const AppRouter = () => {
   const router = createBrowserRouter([
@@ -36,11 +37,13 @@ const AppRouter = () => {
     },
     {
       path: "/login",
-      element: <LoginPage />,
+      element: <UnauthedRoute />,
+      children: [{ index: true, element: <LoginPage /> }],
     },
     {
       path: "/signup",
-      element: <SignUpPage />,
+      element: <UnauthedRoute />,
+      children: [{ index: true, element: <SignUpPage /> }],
     },
     {
       path: "*",

@@ -1,10 +1,11 @@
 // lib imports
 import { useToast } from "@/hooks/use-toast";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { secureStorage } from "@/utils/secure-storage";
+import { useNavigate } from "react-router-dom";
 
 // api imports
 import { signUp } from "@/api/routes/user";
@@ -57,9 +58,16 @@ const SignUpPage = () => {
   // Remove useState hooks
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const [selectedCode, setSelectedCode] = useState<string>("+20");
 
+  const { data: user } = useQuery({
+    queryKey: ["user"],
+    retry: 1,
+  });
+
+  console.log(user, secureStorage.get());
   // Add form hook
   const form = useForm<SignUpFormValues>({
     resolver: zodResolver(signUpSchema),
@@ -92,6 +100,8 @@ const SignUpPage = () => {
         description: "successfully signed up",
       });
       queryClient.invalidateQueries({ queryKey: ["user"] });
+
+      navigate("/");
     },
     onError: (error) => {
       toast({

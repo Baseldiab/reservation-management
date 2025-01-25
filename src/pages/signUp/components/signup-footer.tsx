@@ -5,7 +5,7 @@ export default function SignUpFooter() {
 
   return (
     <>
-      <div className="flex items-center justify-center gap-1">
+      <div className="flex items-center justify-center flex-wrap gap-1">
         <span className="text-theme-text-body text-theme-sm leading-theme-md font-medium">
           Already have an account ?
         </span>

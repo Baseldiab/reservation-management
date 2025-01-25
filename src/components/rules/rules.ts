@@ -53,7 +53,7 @@ export const paySchema = z.object({
   // password?: string
 
 export const signUpSchema = z.object({
-  name: z.string().min(3, "First Name must be more than 3 characters"),
+  name: z.string().min(3, "Name must be more than 3 characters"),
   email: z.string().email("Please enter a valid email address"),
   address_city: z.string().min(3, "First Name must be more than 3 characters"),
   address_country: z.string().min(3, "First Name must be more than 3 characters"),
