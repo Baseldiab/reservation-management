@@ -42,10 +42,10 @@ export default function ConfirmDeleteDialog({
           <div className="flex items-center justify-center mb-4">
             <RecycleBin className="text-red-600 sm:size-10 size-6" />
           </div>
-          <DialogTitle className=" text-theme-3xl max-sm:text-theme-2xl font-bold text-center container leading-theme-xl  text-theme-inputField-error tracking-tight mb-4">
+          <DialogTitle className=" text-theme-3xl max-sm:text-theme-2xl font-bold text-center container leading-theme-xl  text-theme-inputField-error dark:text-white tracking-tight mb-4">
             {title}
           </DialogTitle>
-          <DialogDescription className="text-theme-text-Body text-center">
+          <DialogDescription className="text-theme-text-Body dark:text-white/80 text-center">
             {description}
           </DialogDescription>
         </section>
@@ -64,7 +64,7 @@ export default function ConfirmDeleteDialog({
           <Button
             disabled={isLoading}
             onClick={onCloseModal}
-            className=" text-theme-text-Body bg-transparent hover:bg-white/95 mainBorder border-theme-icon-grey/20 border min-w-20"
+            className=" text-theme-text-Body bg-transparent hover:bg-white/95 mainBorder border-theme-icon-grey/20 border min-w-20 dark:text-white/80 dark:!bg-transparent dark:hover:!bg-white/10"
           >
             No
           </Button>

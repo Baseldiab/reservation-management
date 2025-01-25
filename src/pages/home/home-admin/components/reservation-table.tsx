@@ -69,7 +69,7 @@ export default function ReservationsTable() {
   // table columns
   const columns: ColumnDef<Reservation>[] = [
     {
-      accessorKey: "_id",
+      accessorKey: "id",
       header: () => <p className="text-start ">#</p>,
       cell: ({ row }) => {
         return <div className="text-start font-medium ">{row.original.id}</div>;
@@ -167,7 +167,7 @@ export default function ReservationsTable() {
       <DataTable
         columns={columns}
         data={paginatedData.data}
-        headerClasses="!bg-theme-background-primary dark:!bg-white/50 *:hover:!bg-theme-background-primary !border-none rounded-xl"
+        headerClasses="!bg-theme-background-primary dark:!bg-white/50 *:hover:bg-theme-background-primary !border-none rounded-xl"
         headerCellClasses="!text-white !font-semibold"
         className="border-2 border-theme-lunar-light border-none shadow-xl rounded-xl"
         rowClasses="dark:!bg-white/5"

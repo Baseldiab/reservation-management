@@ -62,7 +62,7 @@ export const deleteReservation = async (
     id: number | string,
   ): Promise<void> => {
     return request({
-      url: `reservations/${id}`,
+      url: `users/1/reservations/${id}`,
       method: "delete",
     });
   };

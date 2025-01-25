@@ -1,5 +1,5 @@
 import React from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 // hooks
 import { useToast } from "@/hooks/use-toast";
@@ -9,7 +9,7 @@ import { Loader2, PencilIcon, Trash2 } from "lucide-react";
 
 // api
 import { deleteReservation } from "@/api/routes/reservation";
-import { Reservation } from "@/api/types/reservation";
+import { Reservation, ReservationFilterParams } from "@/api/types/reservation";
 
 // ui imports
 import { Button } from "@/components/ui/button";
@@ -33,10 +33,20 @@ export default function AdminReservationTableOptions({
   const [isEditDialogOpen, setIsEditDialogOpen] = React.useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false);
 
+  const { data: filters } = useQuery<ReservationFilterParams>({
+    queryKey: ["all-reservations-filters"],
+  });
+
   const deleteReservationMutation = useMutation({
     mutationFn: ({ id }: { id: string }) => deleteReservation(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["blogs"] });
+      queryClient.setQueryData(
+        ["all-reservations", filters],
+        (oldData: Reservation[] | undefined) => {
+          if (!oldData) return [];
+          return oldData.filter((reservation) => reservation.id !== item.id);
+        }
+      );
       toast({
         title: "Deleted Reservation Successfully",
       });
@@ -66,7 +76,7 @@ export default function AdminReservationTableOptions({
             setIsEditDialogOpen(true);
           }}
           disabled={false}
-          className="flex items-center font-medium select-none gap-2 border border-theme-separator !bg-transparent text-yellow-500 hover:!bg-yellow-500 hover:text-white size-8"
+          className="flex items-center font-medium select-none gap-2 border border-theme-separator !bg-transparent text-yellow-500 hover:!bg-yellow-500 hover:text-white size-8 dark:!bg-transparent dark:hover:!bg-yellow-500 dark:hover:text-white"
         >
           <PencilIcon className="size-5 -mb-1 min-w-4 min-h-4" />
         </Button>
@@ -76,7 +86,7 @@ export default function AdminReservationTableOptions({
           onClick={() => {
             setIsDeleteDialogOpen(true);
           }}
-          className="flex items-center font-medium select-none gap-2 border !bg-transparent hover:!bg-red-500 hover:text-white text-red-500 size-8"
+          className="flex items-center font-medium select-none gap-2 border !bg-transparent hover:!bg-red-500 hover:text-white text-red-500 size-8 dark:!bg-transparent dark:hover:!bg-red-500 dark:hover:text-white"
         >
           {deleteReservationMutation.isPending ? (
             <Loader2 className="size-4 animate-spin" />

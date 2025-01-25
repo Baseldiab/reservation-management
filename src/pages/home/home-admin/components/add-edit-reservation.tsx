@@ -12,7 +12,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { AddNewReservationSchemaForAdmin } from "@/components/rules/rules";
 
 // api imports
-import { Reservation, UpdateReservationDto } from "@/api/types/reservation";
+import {
+  Reservation,
+  ReservationFilterParams,
+  UpdateReservationDto,
+} from "@/api/types/reservation";
 import { getAllUsers } from "@/api/routes/user";
 import { addReservation, updateReservation } from "@/api/routes/reservation";
 
@@ -79,6 +83,10 @@ const AddEditReservationDialog = ({
   });
 
   // Quireis
+  const { data: filters } = useQuery<ReservationFilterParams>({
+    queryKey: ["all-reservations-filters"],
+  });
+
   const { data: allUsers, isLoading: isUsersLoading } = useQuery({
     queryKey: ["users"],
     queryFn: () => getAllUsers(),
@@ -102,11 +110,13 @@ const AddEditReservationDialog = ({
         description: "successfully added reservation",
       });
       queryClient.setQueryData(
-        ["all-reservations"],
-        (oldData: Reservation[]) => {
+        ["all-reservations", filters],
+        (oldData: Reservation[] | undefined) => {
+          if (!oldData) return [data];
           return [...oldData, data];
         }
       );
+      setIsDialogOpen(false);
     },
     onError: (error) => {
       toast({
@@ -127,13 +137,15 @@ const AddEditReservationDialog = ({
         description: "successfully added reservation",
       });
       queryClient.setQueryData(
-        ["all-reservations"],
-        (oldData: Reservation[]) => {
+        ["all-reservations", filters],
+        (oldData: Reservation[] | undefined) => {
+          if (!oldData) return [];
           return oldData.map((reservation) =>
             reservation.id === item?.id ? data : reservation
           );
         }
       );
+      setIsDialogOpen(false);
     },
     onError: (error) => {
       toast({
@@ -186,19 +198,33 @@ const AddEditReservationDialog = ({
 
   React.useEffect(() => {
     if (item) {
+      // Find the user in allUsers that matches the item's userId
+      const selectedUser = allUsers?.find((user) => user.id === item.userId);
+
       form.reset({
-        userId: item.userId || "",
-        hotel_name: item.hotel || "",
-        check_in: item.check_in || "",
-        check_out: item.check_out || "",
+        userId: item.userId ?? "",
+        hotel_name: item.hotel_name ?? "",
+        check_in: item.check_in ?? "",
+        check_out: item.check_out ?? "",
         reservation_status:
-          item.reservation_status || ReservationStatus.PENDING,
-        room_type: item.room_type || RoomType.SINGLE,
-        guests: item.guests || 1,
-        name: item.name || "",
+          item.reservation_status ?? ReservationStatus.PENDING,
+        room_type: item.room_type ?? RoomType.SINGLE,
+        guests: item.guests ?? 1,
+        name: selectedUser?.name ?? item.name ?? "",
+      });
+    } else {
+      form.reset({
+        userId: "",
+        hotel_name: "",
+        check_in: "",
+        check_out: "",
+        reservation_status: ReservationStatus.PENDING,
+        room_type: RoomType.SINGLE,
+        guests: 1,
+        name: "",
       });
     }
-  }, [item, form]);
+  }, [item, form, allUsers]);
 
   // States
 
@@ -244,6 +270,7 @@ const AddEditReservationDialog = ({
                                 form.setValue("userId", selectedUser.id);
                               }
                             }}
+                            value={item?.userId || undefined}
                           >
                             <SelectTrigger>
                               <SelectValue placeholder="Select User" />
@@ -334,48 +361,50 @@ const AddEditReservationDialog = ({
                   />
                 </div>
 
-                <div className="flex max-md:flex-col gap-4 items-center justify-start w-full">
-                  {/* reservation status */}
-                  <FormField
-                    control={form.control}
-                    name="reservation_status"
-                    render={({ field }) => (
-                      <FormItem className="w-full md:basis-1/2">
-                        <Label
-                          htmlFor="reservation_status"
-                          className="text-theme-inputField-label"
-                        >
-                          Reservation status
-                          <span className="text-theme-inputField-error mx-1">
-                            *
-                          </span>
-                        </Label>
-                        <FormControl>
-                          <Select
-                            onValueChange={(value) => field.onChange(value)}
-                            defaultValue={field.value}
+                {item && (
+                  <div className="flex max-md:flex-col gap-4 items-center justify-start w-full">
+                    {/* reservation status */}
+                    <FormField
+                      control={form.control}
+                      name="reservation_status"
+                      render={({ field }) => (
+                        <FormItem className="w-full md:basis-1/2">
+                          <Label
+                            htmlFor="reservation_status"
+                            className="text-theme-inputField-label"
                           >
-                            <SelectTrigger className="h-12">
-                              <SelectValue placeholder="Select reservation status" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value={ReservationStatus.PENDING}>
-                                Pending
-                              </SelectItem>
-                              <SelectItem value={ReservationStatus.APPROVED}>
-                                Approved
-                              </SelectItem>
-                              <SelectItem value={ReservationStatus.CANCELLED}>
-                                Cancelled
-                              </SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
+                            Reservation status
+                            <span className="text-theme-inputField-error mx-1">
+                              *
+                            </span>
+                          </Label>
+                          <FormControl>
+                            <Select
+                              onValueChange={(value) => field.onChange(value)}
+                              defaultValue={field.value}
+                            >
+                              <SelectTrigger className="h-12">
+                                <SelectValue placeholder="Select reservation status" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value={ReservationStatus.PENDING}>
+                                  Pending
+                                </SelectItem>
+                                <SelectItem value={ReservationStatus.APPROVED}>
+                                  Approved
+                                </SelectItem>
+                                <SelectItem value={ReservationStatus.CANCELLED}>
+                                  Cancelled
+                                </SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                )}
 
                 <div className="flex max-md:flex-col gap-4 items-center justify-center w-full">
                   {/* room type */}
@@ -444,6 +473,9 @@ const AddEditReservationDialog = ({
                             className="form-input rtl:pl-16"
                             placeholder="Enter your guests"
                             {...field}
+                            onChange={(e) =>
+                              field.onChange(Number(e.target.value))
+                            }
                           />
                         </FormControl>
                         <FormMessage />
