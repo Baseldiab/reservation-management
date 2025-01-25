@@ -1,11 +1,23 @@
 // lib imports
-import React, { useState } from "react";
-import { useTranslation } from "react-i18next";
+import React from "react";
 import { useQueryClient, useMutation, useQuery } from "@tanstack/react-query";
+
+// hook imports
 import { useToast } from "@/hooks/use-toast";
 
+// zod imports
+import { z } from "zod";
+import { Form, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { AddNewReservationSchemaForAdmin } from "@/components/rules/rules";
+
 // api imports
-import { Blog, CreateBlogSchema, UpdateBlogSchema } from "@/api/types/blogs";
+import { Reservation } from "@/api/types/reservation";
+import { getAllUsers } from "@/api/routes/user";
+import { addReservation } from "@/api/routes/reservation";
+
+// enum
+import { ReservationStatus, RoomType } from "@/api/enums/enums";
 
 // ui imports
 import { Button } from "@/components/ui/button";
@@ -17,20 +29,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+import { FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { FormControl, FormField, FormItem } from "@/components/ui/form";
 
 // asset imports
-import { ImagePlus, Loader2, Pencil, Trash2 } from "lucide-react";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { signUpSchema } from "@/components/rules/rules";
-import { useTheme } from "@/hooks/use-theme";
-import { useNavigate } from "react-router-dom";
-import { AddNewReservationSchemaForAdmin } from "./../../../../components/rules/rules";
-import { Reservation } from "@/api/types/reservation";
-import { useForm } from "react-hook-form";
-import { Gender, ReservationStatus, RoomType } from "@/api/enums/enums";
-import { z } from "zod";
+import { Loader2 } from "lucide-react";
 
 interface AddEditReservationProps {
   item: Reservation | null;
@@ -47,20 +52,18 @@ const AddEditReservationDialog = ({
   isDialogOpen = false,
   setIsDialogOpen,
 }: AddEditReservationProps) => {
-  const { theme } = useTheme();
   // Remove useState hooks
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
 
-  const [selectedCode, setSelectedCode] = useState<string>("+20");
+  // states
 
   // Add form hook
   const form = useForm<AddNewReservationSchemaForAdminValues>({
     resolver: zodResolver(AddNewReservationSchemaForAdmin),
     defaultValues: {
       userId: "",
-      hotel: "",
+      hotel_name: "",
       check_in: "",
       check_out: "",
       reservation_status: ReservationStatus.PENDING,
@@ -70,26 +73,35 @@ const AddEditReservationDialog = ({
     },
   });
 
-  const signUpMutation = useMutation({
-    mutationKey: ["signUp"],
-    mutationFn: (data: SignUpFormValues) =>
-      signUp({
+  // Quireis
+  const { data: allUsers, isLoading: isUsersLoading } = useQuery({
+    queryKey: ["users"],
+    queryFn: () => getAllUsers(),
+  });
+
+  const addReservationMutation = useMutation({
+    mutationKey: ["addReservation"],
+    mutationFn: (data: AddNewReservationSchemaForAdminValues) =>
+      addReservation({
         name: data.name,
-        email: data.email,
-        password: data.password,
-        gender: data.gender,
-        phone_number: `${selectedCode}${data.phone_number}`,
-        address_city: data.address_city,
-        address_country: data.address_country,
+        userId: data.userId,
+        hotel_name: data.hotel_name,
+        check_in: data.check_in,
+        check_out: data.check_out,
+        reservation_status: data.reservation_status,
+        room_type: data.room_type,
+        guests: data.guests,
       }),
     onSuccess: (data) => {
-      secureStorage.set(data);
       toast({
-        description: "successfully signed up",
+        description: "successfully added reservation",
       });
-      queryClient.invalidateQueries({ queryKey: ["user"] });
-
-      navigate("/");
+      queryClient.setQueryData(
+        ["all-reservations"],
+        (oldData: Reservation[]) => {
+          return [...oldData, data];
+        }
+      );
     },
     onError: (error) => {
       toast({
@@ -102,9 +114,31 @@ const AddEditReservationDialog = ({
   });
 
   // Update handle login
-  const onSubmit = (data: SignUpFormValues) => {
-    signUpMutation.mutate(data);
+  const onSubmit = (data: AddNewReservationSchemaForAdminValues) => {
+    if (item) {
+      //   updateReservationMutation.mutate(data);
+    } else {
+      addReservationMutation.mutate(data);
+    }
   };
+
+  React.useEffect(() => {
+    if (item) {
+      form.reset({
+        userId: item.userId || "",
+        hotel_name: item.hotel || "",
+        check_in: item.check_in || "",
+        check_out: item.check_out || "",
+        reservation_status:
+          item.reservation_status || ReservationStatus.PENDING,
+        room_type: item.room_type || RoomType.SINGLE,
+        guests: item.guests || 1,
+        name: item.name || "",
+      });
+    } else {
+      form.reset();
+    }
+  }, [item, form]);
 
   // States
 
@@ -113,31 +147,266 @@ const AddEditReservationDialog = ({
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="rounded-xl w-full max-w-[812px] !border-none *:text-white  *:!opacity-100 ">
           <DialogTitle className="flex bg-theme-main-primary h-[72px] px-8 py-5 items-start w-full absolute z-1 -top-0 text-xl">
-            {item
-              ? t(
-                  "settings-page.banners-and-images.app-presentation.edit-image"
-                )
-              : t(
-                  "settings-page.banners-and-images.app-presentation.add-image"
-                )}
+            {item ? "Edit Reservation" : "Add New Reservation"}
           </DialogTitle>
 
           <div className="w-full sm:px-4 px-2  min-h-[300px] !text-theme-text-Body flex flex-col gap-6 mt-[72px] overflow-auto max-h-[80vh] my-3">
-            <div className="flex justify-start items-center gap-4 ">
-              <Button
-                onClick={handleSubmit}
-                className="h-11 flex items-center gap-2 w-[170px]"
-                disabled={
-                  createBlogMutation.isPending || updateBlogMutation.isPending
-                }
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="w-full flex flex-col gap-6 items-start mt-4"
               >
-                {t("settings-page.update-account.save")}
-                {(createBlogMutation.isPending ||
-                  updateBlogMutation.isPending) && (
-                  <Loader2 className="size-4 animate-spin" />
-                )}
-              </Button>
-            </div>
+                <div className="flex max-md:flex-col gap-4 items-center justify-center w-full">
+                  {/* name */}
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem className="w-full">
+                        <Label
+                          htmlFor="name"
+                          className="text-theme-inputField-label"
+                        >
+                          Name
+                          <span className="text-theme-inputField-error mx-1">
+                            *
+                          </span>
+                        </Label>
+                        <FormControl>
+                          <Select
+                            disabled={isUsersLoading}
+                            onValueChange={(userId) => {
+                              const selectedUser = allUsers?.find(
+                                (user) => user.id === userId
+                              );
+                              if (selectedUser) {
+                                field.onChange(selectedUser.name);
+                                form.setValue("userId", selectedUser.id);
+                              }
+                            }}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select User" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {allUsers?.map((user) => (
+                                <SelectItem key={user.id} value={user.id}>
+                                  {user.name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  {/* hotel name */}
+                  <FormField
+                    control={form.control}
+                    name="hotel_name"
+                    render={({ field }) => (
+                      <FormItem className="w-full">
+                        <Label
+                          htmlFor="hotel_name"
+                          className="text-theme-inputField-label"
+                        >
+                          Hotel name
+                          <span className="text-theme-inputField-error mx-1">
+                            *
+                          </span>
+                        </Label>
+                        <FormControl>
+                          <Input
+                            id="hotel_name"
+                            type="text"
+                            className="form-input rtl:pl-16"
+                            placeholder="Enter your hotel name"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="flex max-md:flex-col gap-4 items-center justify-center w-full">
+                  {/* check in */}
+                  <FormField
+                    control={form.control}
+                    name="check_in"
+                    render={({ field }) => (
+                      <FormItem className="w-full">
+                        <Label
+                          htmlFor="check_in"
+                          className="text-theme-inputField-label"
+                        >
+                          Check in
+                        </Label>
+                        <FormControl>
+                          <Input type="date" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  {/* check out */}
+                  <FormField
+                    control={form.control}
+                    name="check_out"
+                    render={({ field }) => (
+                      <FormItem className="w-full">
+                        <Label
+                          htmlFor="check_out"
+                          className="text-theme-inputField-label"
+                        >
+                          Check out
+                        </Label>
+                        <FormControl>
+                          <Input type="date" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="flex max-md:flex-col gap-4 items-center justify-start w-full">
+                  {/* reservation status */}
+                  <FormField
+                    control={form.control}
+                    name="reservation_status"
+                    render={({ field }) => (
+                      <FormItem className="w-full md:basis-1/2">
+                        <Label
+                          htmlFor="reservation_status"
+                          className="text-theme-inputField-label"
+                        >
+                          Reservation status
+                          <span className="text-theme-inputField-error mx-1">
+                            *
+                          </span>
+                        </Label>
+                        <FormControl>
+                          <Select
+                            onValueChange={(value) => field.onChange(value)}
+                            defaultValue={field.value}
+                          >
+                            <SelectTrigger className="h-12">
+                              <SelectValue placeholder="Select reservation status" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value={ReservationStatus.PENDING}>
+                                Pending
+                              </SelectItem>
+                              <SelectItem value={ReservationStatus.APPROVED}>
+                                Approved
+                              </SelectItem>
+                              <SelectItem value={ReservationStatus.CANCELLED}>
+                                Cancelled
+                              </SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="flex max-md:flex-col gap-4 items-center justify-center w-full">
+                  {/* room type */}
+                  <FormField
+                    control={form.control}
+                    name="room_type"
+                    render={({ field }) => (
+                      <FormItem className="w-full">
+                        <Label
+                          htmlFor="room_type"
+                          className="text-theme-inputField-label"
+                        >
+                          Room type
+                          <span className="text-theme-inputField-error mx-1">
+                            *
+                          </span>
+                        </Label>
+                        <FormControl>
+                          <Select
+                            onValueChange={(value) => field.onChange(value)}
+                            defaultValue={field.value}
+                          >
+                            <SelectTrigger className="h-12">
+                              <SelectValue placeholder="Select room type" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value={RoomType.SINGLE}>
+                                Single
+                              </SelectItem>
+                              <SelectItem value={RoomType.DOUBLE}>
+                                Double
+                              </SelectItem>
+                              <SelectItem value={RoomType.TRIPLE}>
+                                Triple
+                              </SelectItem>
+                              <SelectItem value={RoomType.SUITE}>
+                                Suite
+                              </SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  {/* guests */}
+                  <FormField
+                    control={form.control}
+                    name="guests"
+                    render={({ field }) => (
+                      <FormItem className="w-full">
+                        <Label
+                          htmlFor="guests"
+                          className="text-theme-inputField-label"
+                        >
+                          Guests
+                          <span className="text-theme-inputField-error mx-1">
+                            *
+                          </span>
+                        </Label>
+                        <FormControl>
+                          <Input
+                            id="guests"
+                            type="number"
+                            className="form-input rtl:pl-16"
+                            placeholder="Enter your guests"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                {/* Submit Button */}
+
+                <Button
+                  disabled={addReservationMutation.isPending}
+                  type="submit"
+                  className="w-full h-[56px] font-medium text-base flex items-center gap-2"
+                  variant="default"
+                >
+                  Sign Up
+                  {addReservationMutation.isPending && (
+                    <Loader2 className="size-4 animate-spin -mb-1" />
+                  )}
+                </Button>
+              </form>
+            </Form>
           </div>
         </DialogContent>
       </Dialog>

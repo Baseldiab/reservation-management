@@ -79,7 +79,7 @@ export const signUpSchema = z.object({
 
 export const AddNewReservationSchemaForAdmin = z.object({
   userId: z.string().min(1, "User ID is required"),
-  hotel: z.string().min(1, "Hotel name is required"),
+  hotel_name: z.string().min(1, "Hotel name is required"),
   check_in: z.string().datetime().refine(
     (date) => {
       const today = new Date();
