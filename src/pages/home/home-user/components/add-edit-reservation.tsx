@@ -9,7 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AddNewReservationSchemaForAdmin } from "@/components/rules/rules";
+import { AddNewReservationSchemaForUser } from "@/components/rules/rules";
 
 // api imports
 import {
@@ -44,6 +44,7 @@ import {
 
 // asset imports
 import { Loader2 } from "lucide-react";
+import { User } from "@/api/types/user";
 
 interface AddEditReservationProps {
   item: Reservation | null;
@@ -51,8 +52,8 @@ interface AddEditReservationProps {
   setIsDialogOpen: (value: boolean) => void;
 }
 
-type AddNewReservationSchemaForAdminValues = z.infer<
-  typeof AddNewReservationSchemaForAdmin
+type AddNewReservationSchemaForUserValues = z.infer<
+  typeof AddNewReservationSchemaForUser
 >;
 
 const UserAddEditReservationDialog = ({
@@ -64,11 +65,15 @@ const UserAddEditReservationDialog = ({
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
+  const { data: user } = useQuery<User>({
+    queryKey: ["user"],
+  });
+
   // states
 
   // Add form hook
-  const form = useForm<AddNewReservationSchemaForAdminValues>({
-    resolver: zodResolver(AddNewReservationSchemaForAdmin),
+  const form = useForm<AddNewReservationSchemaForUserValues>({
+    resolver: zodResolver(AddNewReservationSchemaForUser),
     defaultValues: {
       userId: "",
       hotel_name: "",
@@ -92,10 +97,10 @@ const UserAddEditReservationDialog = ({
 
   const addReservationMutation = useMutation({
     mutationKey: ["addReservation"],
-    mutationFn: (data: AddNewReservationSchemaForAdminValues) =>
+    mutationFn: (data: AddNewReservationSchemaForUserValues) =>
       addReservation({
-        name: data.name,
-        userId: data.userId,
+        name: user?.name,
+        userId: user?.id as string,
         hotel_name: data.hotel_name,
         check_in: data.check_in,
         check_out: data.check_out,
@@ -128,7 +133,7 @@ const UserAddEditReservationDialog = ({
 
   const updateReservationMutation = useMutation({
     mutationKey: ["updateReservation"],
-    mutationFn: (data: Partial<AddNewReservationSchemaForAdminValues>) =>
+    mutationFn: (data: Partial<AddNewReservationSchemaForUserValues>) =>
       updateReservation(item?.id || "", data),
     onSuccess: (data) => {
       toast({
@@ -156,7 +161,8 @@ const UserAddEditReservationDialog = ({
   });
 
   // Update handle login
-  const onSubmit = (data: AddNewReservationSchemaForAdminValues) => {
+  console.log(form.formState.errors);
+  const onSubmit = (data: AddNewReservationSchemaForUserValues) => {
     if (item) {
       const payload: UpdateReservationDto = {
         name: item.name,
@@ -207,17 +213,17 @@ const UserAddEditReservationDialog = ({
       });
     } else {
       form.reset({
-        userId: "",
+        userId: user?.id as string,
+        name: user?.name as string,
         hotel_name: "",
         check_in: "",
         check_out: "",
         reservation_status: ReservationStatus.PENDING,
         room_type: RoomType.SINGLE,
         guests: 1,
-        name: "",
       });
     }
-  }, [item, form]);
+  }, [item, form, user]);
 
   // States
 
@@ -236,9 +242,6 @@ const UserAddEditReservationDialog = ({
                 className="w-full flex flex-col gap-6 items-start mt-4"
               >
                 <div className="flex max-md:flex-col gap-4 items-center justify-center w-full">
-                  {/* name */}
-                  <h3 className="text-lg font-semibold">{item?.name}</h3>
-
                   {/* hotel name */}
                   <FormField
                     control={form.control}
@@ -333,7 +336,8 @@ const UserAddEditReservationDialog = ({
                               onValueChange={(value) => field.onChange(value)}
                               defaultValue={field.value}
                               disabled={
-                                field.value !== ReservationStatus.PENDING
+                                item.reservation_status !==
+                                ReservationStatus.PENDING
                               }
                             >
                               <SelectTrigger className="h-12">
@@ -343,7 +347,8 @@ const UserAddEditReservationDialog = ({
                                 <SelectItem
                                   value={ReservationStatus.PENDING}
                                   disabled={
-                                    field.value !== ReservationStatus.PENDING
+                                    item.reservation_status !==
+                                    ReservationStatus.PENDING
                                   }
                                 >
                                   Pending
@@ -351,7 +356,8 @@ const UserAddEditReservationDialog = ({
                                 <SelectItem
                                   value={ReservationStatus.CANCELLED}
                                   disabled={
-                                    field.value !== ReservationStatus.PENDING
+                                    item.reservation_status !==
+                                    ReservationStatus.PENDING
                                   }
                                 >
                                   Cancelled

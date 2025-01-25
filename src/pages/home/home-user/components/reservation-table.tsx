@@ -42,6 +42,7 @@ export default function UserReservationsTable() {
           dataQueryKey="my-reservations"
           filterComponent={<UserFilterReservations />}
           searchComponent={<UserSearchReservations />}
+          isUser={true}
         />
       ) : (
         <NoData

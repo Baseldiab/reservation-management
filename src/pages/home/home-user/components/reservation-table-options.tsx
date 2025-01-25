@@ -1,23 +1,18 @@
 import React from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 
 // hooks
-import { useToast } from "@/hooks/use-toast";
 
 // icons
-import { Ellipsis, Loader2, PencilIcon, Trash2 } from "lucide-react";
+import { Ellipsis, PencilIcon } from "lucide-react";
 
 // api
-import { deleteReservation } from "@/api/routes/reservation";
-import { Reservation, ReservationFilterParams } from "@/api/types/reservation";
+import { Reservation } from "@/api/types/reservation";
 
 // ui imports
 import { Button } from "@/components/ui/button";
-import { Dialog } from "@/components/ui/dialog";
 
 // components dialogs
-import ConfirmDeleteDialog from "@/components/dialogs/confirmDeleteDialog";
 import AddEditReservationDialog from "./add-edit-reservation";
 
 interface UserReservationTableOptionsProps {
@@ -27,50 +22,50 @@ interface UserReservationTableOptionsProps {
 export default function UserReservationTableOptions({
   item,
 }: UserReservationTableOptionsProps) {
-  const queryClient = useQueryClient();
-  const { toast } = useToast();
+  // const queryClient = useQueryClient();
+  // const { toast } = useToast();
   const navigate = useNavigate();
 
   // states
   const [isEditDialogOpen, setIsEditDialogOpen] = React.useState(false);
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false);
+  // const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false);
 
-  const { data: filters } = useQuery<ReservationFilterParams>({
-    queryKey: ["my-reservations-filters"],
-  });
-  const { data: searchValue } = useQuery<string>({
-    queryKey: ["my-reservations-search"],
-  });
+  // const { data: filters } = useQuery<ReservationFilterParams>({
+  //   queryKey: ["my-reservations-filters"],
+  // });
+  // const { data: searchValue } = useQuery<string>({
+  //   queryKey: ["my-reservations-search"],
+  // });
 
-  const deleteReservationMutation = useMutation({
-    mutationFn: ({ id }: { id: string }) => deleteReservation(id),
-    onSuccess: () => {
-      queryClient.setQueryData(
-        ["my-reservations", filters, searchValue],
-        (oldData: Reservation[] | undefined) => {
-          if (!oldData) return [];
-          return oldData.filter((reservation) => reservation.id !== item.id);
-        }
-      );
-      toast({
-        title: "Deleted Reservation Successfully",
-      });
-      setIsDeleteDialogOpen(false);
-    },
-    onError: () => {
-      toast({
-        title: "Something went wrong try again later",
-        variant: "destructive",
-      });
-    },
-  });
+  // const deleteReservationMutation = useMutation({
+  //   mutationFn: ({ id }: { id: string }) => deleteReservation(id),
+  //   onSuccess: () => {
+  //     queryClient.setQueryData(
+  //       ["my-reservations", filters, searchValue],
+  //       (oldData: Reservation[] | undefined) => {
+  //         if (!oldData) return [];
+  //         return oldData.filter((reservation) => reservation.id !== item.id);
+  //       }
+  //     );
+  //     toast({
+  //       title: "Deleted Reservation Successfully",
+  //     });
+  //     setIsDeleteDialogOpen(false);
+  //   },
+  //   onError: () => {
+  //     toast({
+  //       title: "Something went wrong try again later",
+  //       variant: "destructive",
+  //     });
+  //   },
+  // });
 
   // Actions
-  const handleDelete = () => {
-    deleteReservationMutation.mutate({
-      id: item.id,
-    });
-  };
+  // const handleDelete = () => {
+  //   deleteReservationMutation.mutate({
+  //     id: item.id,
+  //   });
+  // };
 
   return (
     <>
@@ -85,7 +80,7 @@ export default function UserReservationTableOptions({
         >
           <PencilIcon className="size-5 -mb-1 min-w-4 min-h-4" />
         </Button>
-        <Button
+        {/* <Button
           title="Delete"
           disabled={false}
           onClick={() => {
@@ -98,7 +93,7 @@ export default function UserReservationTableOptions({
           ) : (
             <Trash2 className="size-4 -mb-1 min-w-4 min-h-4" />
           )}
-        </Button>
+        </Button> */}
         <Button
           title="Details"
           disabled={false}
@@ -111,7 +106,7 @@ export default function UserReservationTableOptions({
         </Button>
       </div>
 
-      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+      {/* <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <ConfirmDeleteDialog
           handleDelete={handleDelete}
           onCloseModal={() => {
@@ -121,7 +116,7 @@ export default function UserReservationTableOptions({
           title={"Are you sure you want to delete this reservation?"}
           description={"This action cannot be undone."}
         />
-      </Dialog>
+      </Dialog> */}
 
       <AddEditReservationDialog
         item={item}

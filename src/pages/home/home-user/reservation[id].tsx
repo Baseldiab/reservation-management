@@ -46,7 +46,7 @@ import {
 } from "@/components/ui/form";
 
 // asset imports
-import { CircleX, Loader2 } from "lucide-react";
+import { CircleAlert, CircleX, Loader2 } from "lucide-react";
 import Loading from "@/components/common/loading";
 import NoData from "@/components/common/noData";
 
@@ -178,15 +178,21 @@ const AdminReservationDetailsPage = () => {
         ) : (
           <>
             <h1 className="text-2xl font-semibold mb-6">Reservation Details</h1>
+
+            {item.reservation_status === ReservationStatus.CANCELLED && (
+              <div className="text-orange-700 p-2 border border-orange-500 rounded-lg bg-orange-500/10 my-2 flex justify-start items-center gap-2 flex-wrap">
+                <CircleAlert />
+                <p className="text-base font-medium">
+                  This reservation has been cancelled and cannot be edited.
+                </p>
+              </div>
+            )}
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
                 className="w-full flex flex-col gap-6 items-start"
               >
                 <div className="flex max-md:flex-col gap-4 items-center justify-center w-full">
-                  {/* name */}
-                  <h3 className="text-lg font-semibold">{item.name}</h3>
-
                   {/* hotel name */}
                   <FormField
                     control={form.control}
@@ -281,7 +287,8 @@ const AdminReservationDetailsPage = () => {
                               onValueChange={(value) => field.onChange(value)}
                               defaultValue={field.value}
                               disabled={
-                                field.value !== ReservationStatus.PENDING
+                                item.reservation_status !==
+                                ReservationStatus.PENDING
                               }
                             >
                               <SelectTrigger className="h-12">
@@ -291,7 +298,8 @@ const AdminReservationDetailsPage = () => {
                                 <SelectItem
                                   value={ReservationStatus.PENDING}
                                   disabled={
-                                    field.value !== ReservationStatus.PENDING
+                                    item.reservation_status !==
+                                    ReservationStatus.PENDING
                                   }
                                 >
                                   Pending

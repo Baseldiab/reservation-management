@@ -1,5 +1,4 @@
 // ui imports
-import { Separator } from "@/components/ui/separator";
 
 // api imports
 import { useQuery } from "@tanstack/react-query";
@@ -9,7 +8,8 @@ import { User } from "@/api/types/user";
 import { UserType } from "@/api/enums/enums";
 
 // components home page
-import AdminReservationsTable from "./home-admin/components/reservation-table";
+import AdminReservationsTable from "@/pages/home/home-admin/components/reservation-table";
+import UserReservationsTable from "@/pages/home/home-user/components/reservation-table";
 
 export default function HomePage() {
   const { data: user } = useQuery<User>({
@@ -25,9 +25,10 @@ export default function HomePage() {
           <AdminReservationsTable />
         </>
       ) : (
-        <></>
+        <>
+          <UserReservationsTable />
+        </>
       )}
-      <Separator className="my-4 shadow-2xl" />
     </>
   );
 }

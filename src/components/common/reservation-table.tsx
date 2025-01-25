@@ -1,7 +1,7 @@
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { formatDate } from "@/lib/utils";
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef, Row } from "@tanstack/react-table";
 import { PlusIcon } from "@radix-ui/react-icons";
 import {
   Reservation,
@@ -30,6 +30,7 @@ interface ReservationTableProps {
   dataQueryKey: string;
   filterComponent: React.ReactNode;
   searchComponent: React.ReactNode;
+  isUser?: boolean;
 }
 
 export default function ReservationTable({
@@ -43,6 +44,7 @@ export default function ReservationTable({
   dataQueryKey,
   filterComponent,
   searchComponent,
+  isUser = false,
 }: ReservationTableProps) {
   // state
   const [currentPage, setCurrentPage] = React.useState(1);
@@ -89,70 +91,80 @@ export default function ReservationTable({
   }, [allReservations, currentPage]);
 
   // table columns
-  const columns: ColumnDef<Reservation>[] = [
-    {
-      accessorKey: "id",
-      header: () => <p className="text-start ">#</p>,
-      cell: ({ row }) => {
-        return <div className="text-start font-medium ">{row.original.id}</div>;
+  const columns: ColumnDef<Reservation>[] = React.useMemo(
+    () => [
+      {
+        accessorKey: "id",
+        header: () => <p className="text-start ">Id</p>,
+        cell: ({ row }) => {
+          return (
+            <div className="text-start font-medium ">#{row.original.id}</div>
+          );
+        },
       },
-    },
-    {
-      accessorKey: "name",
-      header: () => <p className="text-start">Name</p>,
-      cell: ({ row }) => {
-        return (
-          <div className="text-start font-medium ">
-            {row.original.name ? row.original.name : "Not found"}
-          </div>
-        );
+      // Only include the User name column if isUser is false
+      ...(!isUser
+        ? [
+            {
+              accessorKey: "User name",
+              header: () => <p className="text-start">Name</p>,
+              cell: ({ row }: { row: Row<Reservation> }) => {
+                return (
+                  <div className="text-start font-medium ">
+                    {row.original.name ? row.original.name : "Not found"}
+                  </div>
+                );
+              },
+            },
+          ]
+        : []),
+      {
+        accessorKey: "hotel_name",
+        header: () => <p className="text-start">Hotel Name</p>,
+        cell: ({ row }) => {
+          return (
+            <p className="text-start font-medium ">
+              {row.original.hotel_name ? row.original.hotel_name : "Not found"}
+            </p>
+          );
+        },
       },
-    },
-    {
-      accessorKey: "hotel_name",
-      header: () => <p className="text-start">Hotel Name</p>,
-      cell: ({ row }) => {
-        return (
-          <p className="text-start font-medium ">
-            {row.original.hotel_name ? row.original.hotel_name : "Not found"}
-          </p>
-        );
+      {
+        accessorKey: "check_in",
+        header: () => <p className="text-start">Check In</p>,
+        cell: ({ row }) => {
+          return (
+            <p className="text-start font-medium ">
+              {row.original.check_in
+                ? formatDate(row.original.check_in)
+                : "Not found"}
+            </p>
+          );
+        },
       },
-    },
-    {
-      accessorKey: "check_in",
-      header: () => <p className="text-start">Check In</p>,
-      cell: ({ row }) => {
-        return (
-          <p className="text-start font-medium ">
-            {row.original.check_in
-              ? formatDate(row.original.check_in)
-              : "Not found"}
-          </p>
-        );
+      {
+        accessorKey: "check_out",
+        header: () => <p className="text-start">Check Out</p>,
+        cell: ({ row }) => {
+          return (
+            <p className="text-start font-medium ">
+              {row.original.check_out
+                ? formatDate(row.original.check_out)
+                : "Not found"}
+            </p>
+          );
+        },
       },
-    },
-    {
-      accessorKey: "check_out",
-      header: () => <p className="text-start">Check Out</p>,
-      cell: ({ row }) => {
-        return (
-          <p className="text-start font-medium ">
-            {row.original.check_out
-              ? formatDate(row.original.check_out)
-              : "Not found"}
-          </p>
-        );
+      {
+        accessorKey: "options",
+        header: () => <div className="text-start">Actions</div>,
+        cell: ({ row }) => {
+          return customOptions ? customOptions(row.original) : null;
+        },
       },
-    },
-    {
-      accessorKey: "options",
-      header: () => <div className="text-start">Actions</div>,
-      cell: ({ row }) => {
-        return customOptions ? customOptions(row.original) : null;
-      },
-    },
-  ];
+    ],
+    [customOptions, isUser]
+  );
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
