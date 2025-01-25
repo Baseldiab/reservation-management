@@ -19,6 +19,10 @@ import SignUpPage from "@/pages/signUp/singup-page";
 import HomePage from "@/pages/home/home-page";
 import ProfilePage from "@/pages/profile/profile-page";
 
+// pages reservation
+import AdminReservationDetailsPage from "@/pages/home/home-admin/reservation[id]";
+import UserReservationDetailsPage from "@/pages/home/home-user/components/[id]";
+
 // pages users
 import UsersPage from "@/pages/users/users-page";
 import UserDetailsPage from "@/pages/users/[id]";
@@ -37,6 +41,17 @@ const AppRouter = () => {
             {
               path: "",
               element: <HomePage />,
+            },
+            {
+              path: "/admin/reservations/:id",
+              element: <AdminRoute />,
+              children: [
+                { path: "", element: <AdminReservationDetailsPage /> },
+              ],
+            },
+            {
+              path: "/reservations/:id",
+              element: <UserReservationDetailsPage />,
             },
             {
               path: "/profile",
