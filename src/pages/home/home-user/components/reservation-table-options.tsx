@@ -20,13 +20,13 @@ import { Dialog } from "@/components/ui/dialog";
 import ConfirmDeleteDialog from "@/components/dialogs/confirmDeleteDialog";
 import AddEditReservationDialog from "./add-edit-reservation";
 
-interface AdminReservationTableOptionsProps {
+interface UserReservationTableOptionsProps {
   item: Reservation;
 }
 
-export default function AdminReservationTableOptions({
+export default function UserReservationTableOptions({
   item,
-}: AdminReservationTableOptionsProps) {
+}: UserReservationTableOptionsProps) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -36,17 +36,17 @@ export default function AdminReservationTableOptions({
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false);
 
   const { data: filters } = useQuery<ReservationFilterParams>({
-    queryKey: ["all-reservations-filters"],
+    queryKey: ["my-reservations-filters"],
   });
   const { data: searchValue } = useQuery<string>({
-    queryKey: ["all-reservations-search"],
+    queryKey: ["my-reservations-search"],
   });
 
   const deleteReservationMutation = useMutation({
     mutationFn: ({ id }: { id: string }) => deleteReservation(id),
     onSuccess: () => {
       queryClient.setQueryData(
-        ["all-reservations", filters, searchValue],
+        ["my-reservations", filters, searchValue],
         (oldData: Reservation[] | undefined) => {
           if (!oldData) return [];
           return oldData.filter((reservation) => reservation.id !== item.id);
@@ -103,7 +103,7 @@ export default function AdminReservationTableOptions({
           title="Details"
           disabled={false}
           onClick={() => {
-            navigate(`/admin/reservations/${item.id}`);
+            navigate(`/reservations/${item.id}`);
           }}
           className="flex items-center font-medium select-none gap-2 border !bg-transparent !text-theme-background-dark dark:!text-theme-background-main  dark:!bg-transparent size-8 hover:!bg-theme-background-primary hover:!text-theme-background-main"
         >

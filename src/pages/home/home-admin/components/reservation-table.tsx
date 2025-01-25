@@ -10,7 +10,7 @@ import AdminReservationTableOptions from "@/pages/home/home-admin/components/res
 import AddEditReservationDialog from "@/pages/home/home-admin/components/add-edit-reservation";
 import ReservationTable from "@/components/common/reservation-table";
 
-export default function ReservationsTable() {
+export default function AdminReservationsTable() {
   // state
   const [isEditDialogOpen, setIsEditDialogOpen] = React.useState(false);
 

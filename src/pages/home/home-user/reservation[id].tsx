@@ -18,7 +18,6 @@ import {
   ReservationFilterParams,
   UpdateReservationDto,
 } from "@/api/types/reservation";
-import { getAllUsers } from "@/api/routes/user";
 import {
   getReservationById,
   updateReservation,
@@ -86,11 +85,6 @@ const AdminReservationDetailsPage = () => {
     queryKey: ["all-reservations-filters"],
   });
 
-  const { data: allUsers, isLoading: isUsersLoading } = useQuery({
-    queryKey: ["users"],
-    queryFn: () => getAllUsers(),
-  });
-
   const updateReservationMutation = useMutation({
     mutationKey: ["updateReservation"],
     mutationFn: (data: Partial<AddNewReservationSchemaForAdminValues>) =>
@@ -122,10 +116,11 @@ const AdminReservationDetailsPage = () => {
   // Update handle login
   const onSubmit = (data: AddNewReservationSchemaForAdminValues) => {
     if (item) {
-      const payload: UpdateReservationDto = {};
-      if (data.name === "" || data.name !== item.name) {
-        payload.name = data.name;
-      }
+      const payload: UpdateReservationDto = {
+        name: item.name,
+        userId: item.userId,
+      };
+
       if (data.check_in === "" || data.check_in !== item.check_in) {
         payload.check_in = data.check_in;
       }
@@ -145,9 +140,7 @@ const AdminReservationDetailsPage = () => {
       if (data.hotel_name === "" || data.hotel_name === item.hotel_name) {
         payload.hotel_name = data.hotel_name;
       }
-      if (data.userId !== item.userId) {
-        payload.userId = data.userId;
-      }
+
       if (Object.keys(payload).length > 0) {
         updateReservationMutation.mutate(payload as UpdateReservationDto);
       }
@@ -156,22 +149,18 @@ const AdminReservationDetailsPage = () => {
 
   React.useEffect(() => {
     if (item) {
-      // Find the user in allUsers that matches the item's userId
-      const selectedUser = allUsers?.find((user) => user.id === item.userId);
-
       form.reset({
-        userId: item.userId ?? "",
-        hotel_name: item.hotel_name ?? "",
-        check_in: item.check_in ?? "",
-        check_out: item.check_out ?? "",
-        reservation_status:
-          item.reservation_status ?? ReservationStatus.PENDING,
-        room_type: item.room_type ?? RoomType.SINGLE,
-        guests: item.guests ?? 1,
-        name: selectedUser?.name ?? item.name ?? "",
+        userId: item.userId,
+        hotel_name: item.hotel_name,
+        check_in: item.check_in,
+        check_out: item.check_out,
+        reservation_status: item.reservation_status,
+        room_type: item.room_type,
+        guests: item.guests,
+        name: item.name,
       });
     }
-  }, [item, form, allUsers]);
+  }, [item, form]);
 
   // States
   if (isReservationLoading) return <Loading />;
@@ -196,50 +185,7 @@ const AdminReservationDetailsPage = () => {
               >
                 <div className="flex max-md:flex-col gap-4 items-center justify-center w-full">
                   {/* name */}
-                  <FormField
-                    control={form.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem className="w-full">
-                        <Label
-                          htmlFor="name"
-                          className="text-theme-inputField-label dark:text-white/90"
-                        >
-                          Name
-                          <span className="text-theme-inputField-error mx-1">
-                            *
-                          </span>
-                        </Label>
-                        <FormControl>
-                          <Select
-                            disabled={isUsersLoading}
-                            onValueChange={(userId) => {
-                              const selectedUser = allUsers?.find(
-                                (user) => user.id === userId
-                              );
-                              if (selectedUser) {
-                                field.onChange(selectedUser.name);
-                                form.setValue("userId", selectedUser.id);
-                              }
-                            }}
-                            value={item?.userId || undefined}
-                          >
-                            <SelectTrigger className="h-12">
-                              <SelectValue placeholder="Select User" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {allUsers?.map((user) => (
-                                <SelectItem key={user.id} value={user.id}>
-                                  {user.name}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                  <h3 className="text-lg font-semibold">{item.name}</h3>
 
                   {/* hotel name */}
                   <FormField
@@ -334,19 +280,35 @@ const AdminReservationDetailsPage = () => {
                             <Select
                               onValueChange={(value) => field.onChange(value)}
                               defaultValue={field.value}
+                              disabled={
+                                field.value !== ReservationStatus.PENDING
+                              }
                             >
                               <SelectTrigger className="h-12">
                                 <SelectValue placeholder="Select reservation status" />
                               </SelectTrigger>
                               <SelectContent>
-                                <SelectItem value={ReservationStatus.PENDING}>
+                                <SelectItem
+                                  value={ReservationStatus.PENDING}
+                                  disabled={
+                                    field.value !== ReservationStatus.PENDING
+                                  }
+                                >
                                   Pending
                                 </SelectItem>
-                                <SelectItem value={ReservationStatus.APPROVED}>
-                                  Approved
-                                </SelectItem>
-                                <SelectItem value={ReservationStatus.CANCELLED}>
+                                <SelectItem
+                                  value={ReservationStatus.CANCELLED}
+                                  disabled={
+                                    field.value !== ReservationStatus.PENDING
+                                  }
+                                >
                                   Cancelled
+                                </SelectItem>
+                                <SelectItem
+                                  value={ReservationStatus.APPROVED}
+                                  disabled={true}
+                                >
+                                  Approved
                                 </SelectItem>
                               </SelectContent>
                             </Select>

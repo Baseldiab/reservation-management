@@ -1,4 +1,3 @@
-import { useParams } from "react-router-dom";
 // lib imports
 import React from "react";
 import { useQueryClient, useMutation, useQuery } from "@tanstack/react-query";
@@ -18,17 +17,14 @@ import {
   ReservationFilterParams,
   UpdateReservationDto,
 } from "@/api/types/reservation";
-import { getAllUsers } from "@/api/routes/user";
-import {
-  getReservationById,
-  updateReservation,
-} from "@/api/routes/reservation";
+import { addReservation, updateReservation } from "@/api/routes/reservation";
 
 // enum
 import { ReservationStatus, RoomType } from "@/api/enums/enums";
 
 // ui imports
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import {
   Select,
   SelectContent,
@@ -47,24 +43,28 @@ import {
 } from "@/components/ui/form";
 
 // asset imports
-import { CircleX, Loader2 } from "lucide-react";
-import Loading from "@/components/common/loading";
-import NoData from "@/components/common/noData";
+import { Loader2 } from "lucide-react";
+
+interface AddEditReservationProps {
+  item: Reservation | null;
+  isDialogOpen: boolean;
+  setIsDialogOpen: (value: boolean) => void;
+}
 
 type AddNewReservationSchemaForAdminValues = z.infer<
   typeof AddNewReservationSchemaForAdmin
 >;
 
-const AdminReservationDetailsPage = () => {
+const UserAddEditReservationDialog = ({
+  item,
+  isDialogOpen = false,
+  setIsDialogOpen,
+}: AddEditReservationProps) => {
+  // Remove useState hooks
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const { id } = useParams();
 
-  const { data: item, isLoading: isReservationLoading } = useQuery({
-    queryKey: ["reservation", id],
-    queryFn: () => getReservationById(id as string),
-    enabled: !!id,
-  });
+  // states
 
   // Add form hook
   const form = useForm<AddNewReservationSchemaForAdminValues>({
@@ -83,12 +83,47 @@ const AdminReservationDetailsPage = () => {
 
   // Quireis
   const { data: filters } = useQuery<ReservationFilterParams>({
-    queryKey: ["all-reservations-filters"],
+    queryKey: ["my-reservations-filters"],
   });
 
-  const { data: allUsers, isLoading: isUsersLoading } = useQuery({
-    queryKey: ["users"],
-    queryFn: () => getAllUsers(),
+  const { data: searchValue } = useQuery<string>({
+    queryKey: ["my-reservations-search"],
+  });
+
+  const addReservationMutation = useMutation({
+    mutationKey: ["addReservation"],
+    mutationFn: (data: AddNewReservationSchemaForAdminValues) =>
+      addReservation({
+        name: data.name,
+        userId: data.userId,
+        hotel_name: data.hotel_name,
+        check_in: data.check_in,
+        check_out: data.check_out,
+        reservation_status: data.reservation_status,
+        room_type: data.room_type,
+        guests: data.guests,
+      }),
+    onSuccess: (data) => {
+      toast({
+        description: "successfully added reservation",
+      });
+      queryClient.setQueryData(
+        ["my-reservations", filters, searchValue],
+        (oldData: Reservation[] | undefined) => {
+          if (!oldData) return [data];
+          return [...oldData, data];
+        }
+      );
+      setIsDialogOpen(false);
+    },
+    onError: (error) => {
+      toast({
+        variant: "destructive",
+        title:
+          "Something went wrong please try again or check your internet connection",
+        description: error.message,
+      });
+    },
   });
 
   const updateReservationMutation = useMutation({
@@ -100,7 +135,7 @@ const AdminReservationDetailsPage = () => {
         description: "successfully added reservation",
       });
       queryClient.setQueryData(
-        ["all-reservations", filters],
+        ["my-reservations", filters, searchValue],
         (oldData: Reservation[] | undefined) => {
           if (!oldData) return [];
           return oldData.map((reservation) =>
@@ -108,6 +143,7 @@ const AdminReservationDetailsPage = () => {
           );
         }
       );
+      setIsDialogOpen(false);
     },
     onError: (error) => {
       toast({
@@ -122,10 +158,10 @@ const AdminReservationDetailsPage = () => {
   // Update handle login
   const onSubmit = (data: AddNewReservationSchemaForAdminValues) => {
     if (item) {
-      const payload: UpdateReservationDto = {};
-      if (data.name === "" || data.name !== item.name) {
-        payload.name = data.name;
-      }
+      const payload: UpdateReservationDto = {
+        name: item.name,
+        userId: item.userId,
+      };
       if (data.check_in === "" || data.check_in !== item.check_in) {
         payload.check_in = data.check_in;
       }
@@ -145,20 +181,19 @@ const AdminReservationDetailsPage = () => {
       if (data.hotel_name === "" || data.hotel_name === item.hotel_name) {
         payload.hotel_name = data.hotel_name;
       }
-      if (data.userId !== item.userId) {
-        payload.userId = data.userId;
-      }
+
       if (Object.keys(payload).length > 0) {
         updateReservationMutation.mutate(payload as UpdateReservationDto);
       }
+
+      //   updateReservationMutation.mutate(data);
+    } else {
+      addReservationMutation.mutate(data);
     }
   };
 
   React.useEffect(() => {
     if (item) {
-      // Find the user in allUsers that matches the item's userId
-      const selectedUser = allUsers?.find((user) => user.id === item.userId);
-
       form.reset({
         userId: item.userId ?? "",
         hotel_name: item.hotel_name ?? "",
@@ -168,78 +203,41 @@ const AdminReservationDetailsPage = () => {
           item.reservation_status ?? ReservationStatus.PENDING,
         room_type: item.room_type ?? RoomType.SINGLE,
         guests: item.guests ?? 1,
-        name: selectedUser?.name ?? item.name ?? "",
+        name: item.name ?? "",
+      });
+    } else {
+      form.reset({
+        userId: "",
+        hotel_name: "",
+        check_in: "",
+        check_out: "",
+        reservation_status: ReservationStatus.PENDING,
+        room_type: RoomType.SINGLE,
+        guests: 1,
+        name: "",
       });
     }
-  }, [item, form, allUsers]);
+  }, [item, form]);
 
   // States
-  if (isReservationLoading) return <Loading />;
 
   return (
-    <div className="w-full min-h-screen p-6">
-      <div className="w-full max-w-[812px] mx-auto bg-white dark:bg-black rounded-xl border p-6">
-        {!item ? (
-          <>
-            <NoData
-              title="Reservation not found"
-              icon={<CircleX className="size-10" />}
-            />
-          </>
-        ) : (
-          <>
-            <h1 className="text-2xl font-semibold mb-6">Reservation Details</h1>
+    <>
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="rounded-xl w-full max-w-[812px] *:text-white  *:!opacity-100 bg-white dark:bg-black z-50 border">
+          <DialogTitle className="flex bg-theme-background-primary dark:bg-theme-background-primary/80 h-[72px] px-8 py-5 items-start w-full absolute z-1 -top-0 text-xl">
+            {item ? "Edit Reservation" : "Add New Reservation"}
+          </DialogTitle>
+
+          <div className="w-full sm:px-4 px-2  min-h-[300px] !text-theme-text-Body flex flex-col gap-6 mt-[72px] overflow-auto max-h-[80vh] my-3">
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
-                className="w-full flex flex-col gap-6 items-start"
+                className="w-full flex flex-col gap-6 items-start mt-4"
               >
                 <div className="flex max-md:flex-col gap-4 items-center justify-center w-full">
                   {/* name */}
-                  <FormField
-                    control={form.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem className="w-full">
-                        <Label
-                          htmlFor="name"
-                          className="text-theme-inputField-label dark:text-white/90"
-                        >
-                          Name
-                          <span className="text-theme-inputField-error mx-1">
-                            *
-                          </span>
-                        </Label>
-                        <FormControl>
-                          <Select
-                            disabled={isUsersLoading}
-                            onValueChange={(userId) => {
-                              const selectedUser = allUsers?.find(
-                                (user) => user.id === userId
-                              );
-                              if (selectedUser) {
-                                field.onChange(selectedUser.name);
-                                form.setValue("userId", selectedUser.id);
-                              }
-                            }}
-                            value={item?.userId || undefined}
-                          >
-                            <SelectTrigger className="h-12">
-                              <SelectValue placeholder="Select User" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {allUsers?.map((user) => (
-                                <SelectItem key={user.id} value={user.id}>
-                                  {user.name}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                  <h3 className="text-lg font-semibold">{item?.name}</h3>
 
                   {/* hotel name */}
                   <FormField
@@ -334,19 +332,35 @@ const AdminReservationDetailsPage = () => {
                             <Select
                               onValueChange={(value) => field.onChange(value)}
                               defaultValue={field.value}
+                              disabled={
+                                field.value !== ReservationStatus.PENDING
+                              }
                             >
                               <SelectTrigger className="h-12">
                                 <SelectValue placeholder="Select reservation status" />
                               </SelectTrigger>
                               <SelectContent>
-                                <SelectItem value={ReservationStatus.PENDING}>
+                                <SelectItem
+                                  value={ReservationStatus.PENDING}
+                                  disabled={
+                                    field.value !== ReservationStatus.PENDING
+                                  }
+                                >
                                   Pending
                                 </SelectItem>
-                                <SelectItem value={ReservationStatus.APPROVED}>
-                                  Approved
-                                </SelectItem>
-                                <SelectItem value={ReservationStatus.CANCELLED}>
+                                <SelectItem
+                                  value={ReservationStatus.CANCELLED}
+                                  disabled={
+                                    field.value !== ReservationStatus.PENDING
+                                  }
+                                >
                                   Cancelled
+                                </SelectItem>
+                                <SelectItem
+                                  value={ReservationStatus.APPROVED}
+                                  disabled={true}
+                                >
+                                  Approved
                                 </SelectItem>
                               </SelectContent>
                             </Select>
@@ -436,25 +450,25 @@ const AdminReservationDetailsPage = () => {
                   />
                 </div>
 
-                {/* Update Submit Button */}
+                {/* Submit Button */}
                 <Button
-                  disabled={updateReservationMutation.isPending}
+                  disabled={addReservationMutation.isPending}
                   type="submit"
                   className="w-full h-[56px] font-medium text-base flex items-center gap-2"
                   variant="default"
                 >
-                  Update Reservation
-                  {updateReservationMutation.isPending && (
+                  {item ? "Update" : "Add"} Reservation
+                  {addReservationMutation.isPending && (
                     <Loader2 className="size-4 animate-spin -mb-1" />
                   )}
                 </Button>
               </form>
             </Form>
-          </>
-        )}
-      </div>
-    </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 
-export default AdminReservationDetailsPage;
+export default UserAddEditReservationDialog;

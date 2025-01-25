@@ -21,7 +21,7 @@ import ProfilePage from "@/pages/profile/profile-page";
 
 // pages reservation
 import AdminReservationDetailsPage from "@/pages/home/home-admin/reservation[id]";
-import UserReservationDetailsPage from "@/pages/home/home-user/components/[id]";
+import UserReservationDetailsPage from "@/pages/home/home-user/reservation[id]";
 
 // pages users
 import UsersPage from "@/pages/users/users-page";
