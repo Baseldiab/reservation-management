@@ -7,7 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 
 // zod imports
 import { z } from "zod";
-import { Form, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AddNewReservationSchemaForAdmin } from "@/components/rules/rules";
 
@@ -30,9 +30,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { FormControl, FormField, FormItem } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
 
 // asset imports
 import { Loader2 } from "lucide-react";
@@ -200,8 +205,8 @@ const AddEditReservationDialog = ({
   return (
     <>
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="rounded-xl w-full max-w-[812px] !border-none *:text-white  *:!opacity-100 ">
-          <DialogTitle className="flex bg-theme-main-primary h-[72px] px-8 py-5 items-start w-full absolute z-1 -top-0 text-xl">
+        <DialogContent className="rounded-xl w-full max-w-[812px] *:text-white  *:!opacity-100 bg-white dark:bg-black z-50 border">
+          <DialogTitle className="flex bg-theme-background-primary dark:bg-theme-background-primary/80 h-[72px] px-8 py-5 items-start w-full absolute z-1 -top-0 text-xl">
             {item ? "Edit Reservation" : "Add New Reservation"}
           </DialogTitle>
 
@@ -220,7 +225,7 @@ const AddEditReservationDialog = ({
                       <FormItem className="w-full">
                         <Label
                           htmlFor="name"
-                          className="text-theme-inputField-label"
+                          className="text-theme-inputField-label dark:text-white/90"
                         >
                           Name
                           <span className="text-theme-inputField-error mx-1">
@@ -265,7 +270,7 @@ const AddEditReservationDialog = ({
                       <FormItem className="w-full">
                         <Label
                           htmlFor="hotel_name"
-                          className="text-theme-inputField-label"
+                          className="text-theme-inputField-label dark:text-white/90"
                         >
                           Hotel name
                           <span className="text-theme-inputField-error mx-1">
@@ -296,7 +301,7 @@ const AddEditReservationDialog = ({
                       <FormItem className="w-full">
                         <Label
                           htmlFor="check_in"
-                          className="text-theme-inputField-label"
+                          className="text-theme-inputField-label dark:text-white/90"
                         >
                           Check in
                         </Label>
@@ -316,7 +321,7 @@ const AddEditReservationDialog = ({
                       <FormItem className="w-full">
                         <Label
                           htmlFor="check_out"
-                          className="text-theme-inputField-label"
+                          className="text-theme-inputField-label dark:text-white/90"
                         >
                           Check out
                         </Label>
@@ -448,14 +453,13 @@ const AddEditReservationDialog = ({
                 </div>
 
                 {/* Submit Button */}
-
                 <Button
                   disabled={addReservationMutation.isPending}
                   type="submit"
                   className="w-full h-[56px] font-medium text-base flex items-center gap-2"
                   variant="default"
                 >
-                  Sign Up
+                  {item ? "Update" : "Add"} Reservation
                   {addReservationMutation.isPending && (
                     <Loader2 className="size-4 animate-spin -mb-1" />
                   )}
