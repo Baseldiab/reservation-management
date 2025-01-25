@@ -19,9 +19,6 @@ import SignUpPage from "@/pages/signUp/singup-page";
 import HomePage from "@/pages/home/home-page";
 import ProfilePage from "@/pages/profile/profile-page";
 
-// pages reservation
-import ReservationDetailsPage from "@/pages/reservation/[id]";
-
 // pages users
 import UsersPage from "@/pages/users/users-page";
 import UserDetailsPage from "@/pages/users/[id]";
@@ -52,10 +49,6 @@ const AppRouter = () => {
                 { path: "", element: <UsersPage /> },
                 { path: ":id", element: <UserDetailsPage /> },
               ],
-            },
-            {
-              path: "/reservations/:id",
-              element: <ReservationDetailsPage />,
             },
           ],
         },
