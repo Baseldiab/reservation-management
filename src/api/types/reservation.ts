@@ -3,15 +3,24 @@
 import { ReservationStatus, RoomType } from "@/api/enums/enums";
 
 export interface ReservationParams {
+    page?: number;
+    limit?: number;
     check_in?: string;
     check_out?: string;
     reservation_status?: ReservationStatus;
     room_type?: RoomType;
     guests?: number;
     hotel_name?: string;
-    id?: string;
     userId?: string;
     hotel?: string;
+    name?: string;
+}
+
+export interface ReservationFilterParams {
+    check_in?: string;
+    check_out?: string;
+    reservation_status?: ReservationStatus;
+    hotel_name?: string;
     name?: string;
 }
 

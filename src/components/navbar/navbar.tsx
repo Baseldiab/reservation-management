@@ -3,7 +3,7 @@ import clsx from "clsx";
 import { useQuery } from "@tanstack/react-query";
 
 // constants
-import { navbarMenuArray } from "@/lib/constants/navbar";
+import { NavbarMenu } from "@/lib/constants/navbar";
 
 // assets
 import MainLogoIcon from "@/components/icons/MainLogoIcon";
@@ -20,17 +20,34 @@ import BreathAnimation from "@/components/common/breath-animation";
 import MenuNavbar from "@/components/navbar/menu-navbar";
 import ThemeToggle from "@/components/navbar/theme_toggle";
 import LogoutBtn from "@/components/navbar/logout-btn";
+import { UserType } from "@/api/enums/enums";
+import { User } from "@/api/types/user";
 
 export default function Navbar() {
   const { theme } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { data: user } = useQuery({
+  const { data: user } = useQuery<User>({
     queryKey: ["user"],
   });
 
-  console.log(user);
+  const navbarMenuArray: NavbarMenu[] = [
+    {
+      link: "/",
+      id: "home",
+      text: "Home",
+    },
+    ...(user?.user_type === UserType.ADMIN
+      ? [
+          {
+            link: "/users",
+            id: "users",
+            text: "Users",
+          },
+        ]
+      : []),
+  ];
 
   return (
     <nav className="my-4">
@@ -44,24 +61,26 @@ export default function Navbar() {
         </Link>
 
         {/* desktop menu */}
-        <ul className="flex justify-end items-end gap-8 text-theme-text-main dark:text-theme-text-dark font-semibold text-base md:text-xl max-lg:hidden">
-          {navbarMenuArray.map((item) => (
-            <li key={item.id} className="!p-0 !m-0 ">
-              <BreathAnimation>
-                <NavLink
-                  to={item.link}
-                  className={clsx(
-                    "hover:underline link-hover  uppercase",
-                    location.pathname === item.link &&
-                      "underline underline-offset-2 text-theme-text-primary dark:text-theme-text-primary"
-                  )}
-                >
-                  {item.text}
-                </NavLink>
-              </BreathAnimation>
-            </li>
-          ))}
-        </ul>
+        {user?.user_type === UserType.ADMIN && (
+          <ul className="flex justify-end items-end gap-8 text-theme-text-main dark:text-theme-text-dark font-semibold text-base md:text-xl max-lg:hidden">
+            {navbarMenuArray.map((item) => (
+              <li key={item.id} className="!p-0 !m-0 ">
+                <BreathAnimation>
+                  <NavLink
+                    to={item.link}
+                    className={clsx(
+                      "hover:underline link-hover  uppercase",
+                      location.pathname === item.link &&
+                        "underline underline-offset-2 text-theme-text-primary dark:text-theme-text-primary"
+                    )}
+                  >
+                    {item.text}
+                  </NavLink>
+                </BreathAnimation>
+              </li>
+            ))}
+          </ul>
+        )}
 
         <div className="flex items-center gap-2">
           <ThemeToggle />
@@ -69,7 +88,10 @@ export default function Navbar() {
             <LogoutBtn className="max-lg:hidden" />
           </BreathAnimation>
 
-          <MenuNavbar className={`lg:hidden`} />
+          <MenuNavbar
+            navbarMenuArray={navbarMenuArray}
+            className={`lg:hidden`}
+          />
 
           {/* <Avatar className="size-10 !bg-gray-200 dark:!bg-gray-800">
             <AvatarFallback className="text-slate-900 dark:text-white font-semibold text-base"></AvatarFallback>

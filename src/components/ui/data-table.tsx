@@ -29,6 +29,7 @@ interface DataTableProps<TData, TValue> {
   rowClasses?: string;
   bodyClasses?: string;
   cellsClasses?: string;
+  emptyMessage?: string;
 }
 
 export function DataTable<TData, TValue>({
@@ -42,6 +43,7 @@ export function DataTable<TData, TValue>({
   rowClasses,
   bodyClasses,
   cellsClasses,
+  emptyMessage,
 }: DataTableProps<TData, TValue>) {
   const [expandedRows, setExpandedRows] = useState<Record<string, boolean>>({});
 
@@ -130,7 +132,7 @@ export function DataTable<TData, TValue>({
                 colSpan={columns.length + (subTable ? 1 : 0)}
                 className="h-24 text-center"
               >
-                No Users Found
+                {emptyMessage || "No Data Found"}
               </TableCell>
             </TableRow>
           )}

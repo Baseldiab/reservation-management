@@ -218,6 +218,7 @@ export default function UsersTable() {
         headerCellClasses="!text-white !font-semibold"
         className="border-2 border-theme-lunar-light border-none shadow-xl rounded-xl"
         rowClasses="dark:!bg-white/5"
+        emptyMessage="No Users Found"
       />
 
       {totalPages > 1 && (

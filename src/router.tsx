@@ -20,6 +20,7 @@ import ProfilePage from "@/pages/profile/profile-page";
 
 // pages users
 import UsersPage from "@/pages/users/users-page";
+import AdminRoute from "./components/auth/admin-routes";
 
 const AppRouter = () => {
   const router = createBrowserRouter([
@@ -37,12 +38,13 @@ const AppRouter = () => {
               element: <HomePage />,
             },
             {
-              path: "/users",
-              element: <UsersPage />,
-            },
-            {
               path: "/profile",
               element: <ProfilePage />,
+            },
+            {
+              path: "/users",
+              element: <AdminRoute />,
+              children: [{ index: true, element: <UsersPage /> }],
             },
           ],
         },

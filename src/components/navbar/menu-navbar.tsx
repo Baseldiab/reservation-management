@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils";
 import { useDimensions } from "@/hooks/use-dimensions";
 
 // constants
-import { NavbarMenu, navbarMenuArray } from "@/lib/constants/navbar";
+import { NavbarMenu } from "@/lib/constants/navbar";
 
 // icons
 
@@ -24,9 +24,13 @@ import LogoutBtn from "@/components/navbar/logout-btn";
 
 interface MenuNavbarProps {
   className?: string;
+  navbarMenuArray: NavbarMenu[];
 }
 
-export default function MenuNavbar({ className }: MenuNavbarProps) {
+export default function MenuNavbar({
+  className,
+  navbarMenuArray,
+}: MenuNavbarProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const { height } = useDimensions(containerRef);
 

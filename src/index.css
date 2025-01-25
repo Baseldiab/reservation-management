@@ -102,11 +102,11 @@
 
 *::-webkit-scrollbar-thumb {
   border-radius: 5px;
-  background-color: #3b82f6 !important;
+  background-color: #3394d0 !important;
 }
 
 *::-webkit-scrollbar-thumb:hover {
-  background-color: #3b82f6 !important;
+  background-color: #3394d0 !important;
 }
 
 *::-webkit-scrollbar-thumb:active {

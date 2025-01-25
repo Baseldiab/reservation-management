@@ -19,7 +19,8 @@ export default {
           background: {
             main: '#ffffffcc',
             dark: '#000',
-            secondary: '#f8f9fa'
+            secondary: '#f8f9fa',
+            primary: '#3394d0',
           },
           text: {
             primary: '#3394d0',
