@@ -18,8 +18,6 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { Button } from "@/components/ui/button";
-import Loading from "@/components/common/loading";
-import FilterReservations from "@/pages/home/home-admin/components/reservation-filter";
 
 interface ReservationTableProps {
   title: string;
@@ -30,6 +28,8 @@ interface ReservationTableProps {
   searchQueryKey: string;
   filterQueryKey: string;
   dataQueryKey: string;
+  filterComponent: React.ReactNode;
+  searchComponent: React.ReactNode;
 }
 
 export default function ReservationTable({
@@ -41,6 +41,8 @@ export default function ReservationTable({
   searchQueryKey,
   filterQueryKey,
   dataQueryKey,
+  filterComponent,
+  searchComponent,
 }: ReservationTableProps) {
   // state
   const [currentPage, setCurrentPage] = React.useState(1);
@@ -60,7 +62,7 @@ export default function ReservationTable({
     queryFn: () =>
       getAllReservationsFn({
         ...filters,
-        search: searchValue,
+        ...(searchValue && { search: searchValue }),
       }),
     retry: 1,
     enabled: !!dataQueryKey,
@@ -156,9 +158,9 @@ export default function ReservationTable({
     setCurrentPage(page);
   };
 
-  if (isReservationsLoading) {
-    return <Loading />;
-  }
+  // if (isReservationsLoading) {
+  //   return <Loading />;
+  // }
 
   return (
     <section className="w-full bg-transparent rounded-3xl p-6 flex flex-col gap-6 container">
@@ -177,15 +179,17 @@ export default function ReservationTable({
         )}
 
         <div className="flex max-md:!w-full max-md:flex-col max-md:items-start md:flex-1 justify-end items-center gap-4">
-          <FilterReservations />
+          {filterComponent}
+          {searchComponent}
         </div>
       </article>
 
       <DataTable
+        isLoading={isReservationsLoading}
         columns={columns}
         data={paginatedData.data}
-        headerClasses="!bg-theme-background-primary dark:!bg-white/5 *:hover:bg-theme-background-primary !border-none rounded-xl"
-        headerCellClasses="!text-white !font-semibold"
+        headerClasses="!bg-theme-background-primary dark:!bg-theme-button-primary/90 *:hover:bg-theme-background-primary !border-none rounded-xl"
+        headerCellClasses="!text-white !font-semibold bg-theme-background-primary"
         className="border-2 border-theme-lunar-light border-none shadow-xl rounded-xl"
         rowClasses="dark:!bg-white/5"
         emptyMessage="No Reservations Found"

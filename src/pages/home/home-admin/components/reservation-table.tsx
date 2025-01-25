@@ -4,7 +4,8 @@ import React from "react";
 import { getAllReservations } from "@/api/routes/reservation";
 
 // components home admin
-
+import FilterReservations from "@/pages/home/home-admin/components/reservation-filter";
+import SearchReservations from "@/pages/home/home-admin/components/reservation-search";
 import AdminReservationTableOptions from "@/pages/home/home-admin/components/reservation-table-options";
 import AddEditReservationDialog from "@/pages/home/home-admin/components/add-edit-reservation";
 import ReservationTable from "@/components/common/reservation-table";
@@ -26,6 +27,8 @@ export default function ReservationsTable() {
         searchQueryKey="all-reservations-search"
         filterQueryKey="all-reservations-filters"
         dataQueryKey="all-reservations"
+        filterComponent={<FilterReservations />}
+        searchComponent={<SearchReservations />}
       />
 
       <AddEditReservationDialog

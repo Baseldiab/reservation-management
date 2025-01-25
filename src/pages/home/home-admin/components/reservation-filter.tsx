@@ -24,6 +24,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
+import React from "react";
 
 function FilterReservations() {
   const queryClient = useQueryClient();
@@ -67,6 +68,10 @@ function FilterReservations() {
     setHotelName(null);
     setName(null);
     queryClient.setQueryData(["all-reservations-filters"], {});
+    queryClient.invalidateQueries({
+      queryKey: ["all-reservations"],
+      exact: false,
+    });
     setFiltersOpen(false);
   };
 

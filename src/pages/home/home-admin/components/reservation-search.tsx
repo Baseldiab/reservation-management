@@ -9,30 +9,46 @@ import { Input } from "@/components/ui/input";
 // icons
 import { SearchIcon, X } from "lucide-react";
 
-// api imports
-
 function Search() {
   const queryClient = useQueryClient();
   const [searchValue, setSearchValue] = useState("");
 
-  const handleSearch = debounce((e: React.ChangeEvent<HTMLInputElement>) => {
-    queryClient.setQueryData(["all-reservations-search"], e.target.value);
-  }, 500);
+  const debouncedSetQuery = useCallback(
+    (value: string) => {
+      debounce((searchValue: string) => {
+        queryClient.setQueryData(["all-reservations-search"], searchValue);
+      }, 500)(value);
+    },
+    [queryClient]
+  );
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchValue(value);
+    debouncedSetQuery(value);
+  };
 
   const handleReset = useCallback(() => {
     setSearchValue("");
-    queryClient.invalidateQueries({ queryKey: ["all-reservations"] });
+    queryClient.setQueryData(["all-reservations-search"], "");
+    queryClient.invalidateQueries({
+      queryKey: ["all-reservations"],
+      exact: false,
+    });
   }, [queryClient]);
 
   return (
     <div className="flex-1 min-w-[200px] self-start md:max-w-[400px] relative max-md:!w-full">
       <Input
+        defaultValue={
+          queryClient.getQueryData(["all-reservations-search"]) as string
+        }
         value={searchValue}
         onChange={handleSearch}
-        className="flex-1 h-[44px] rounded-lg border border-theme-separating-border"
-        placeholder="Search User By Name or Email"
+        className="flex-1 h-[44px] rounded-lg border border-theme-separating-border "
+        placeholder="Search Reservation"
       />
-      {searchValue ? (
+      {searchValue !== "" ? (
         <button
           onClick={handleReset}
           className="absolute end-10 top-1/2 -translate-y-1/2 hover:opacity-70"

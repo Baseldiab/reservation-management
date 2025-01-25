@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import Loading from "@/components/common/loading";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -30,6 +31,7 @@ interface DataTableProps<TData, TValue> {
   bodyClasses?: string;
   cellsClasses?: string;
   emptyMessage?: string;
+  isLoading?: boolean;
 }
 
 export function DataTable<TData, TValue>({
@@ -44,6 +46,7 @@ export function DataTable<TData, TValue>({
   bodyClasses,
   cellsClasses,
   emptyMessage,
+  isLoading = false,
 }: DataTableProps<TData, TValue>) {
   const [expandedRows, setExpandedRows] = useState<Record<string, boolean>>({});
 
@@ -82,59 +85,75 @@ export function DataTable<TData, TValue>({
           </TableRow>
         </TableHeader>
         <TableBody className={bodyClasses}>
-          {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => {
-              return (
-                <React.Fragment key={row.id}>
-                  <TableRow className={rowClasses} key={row.id}>
-                    {subTable && (
-                      <TableCell className="p-0 w-[50px] px-2">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="h-8 w-8 p-0"
-                          onClick={() => toggleRow(row.id)}
-                        >
-                          {expandedRows[row.id] ? (
-                            <ChevronDown className="h-4 w-4" />
-                          ) : (
-                            <ChevronRight className="h-4 w-4" />
-                          )}
-                          <span className="sr-only">Toggle row</span>
-                        </Button>
-                      </TableCell>
-                    )}
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell
-                        key={cell.id}
-                        className={cn("px-4 py-3 ", cellsClasses)}
-                      >
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                  {subTable && expandedRows[row.id] && (
-                    <TableRow>
-                      <TableCell colSpan={columns.length + 1} className="p-0">
-                        <div className="p-4">{subTable(row.original)}</div>
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </React.Fragment>
-              );
-            })
-          ) : (
-            <TableRow>
+          {isLoading ? (
+            <TableRow className={rowClasses}>
               <TableCell
                 colSpan={columns.length + (subTable ? 1 : 0)}
                 className="h-24 text-center"
               >
-                {emptyMessage || "No Data Found"}
+                <Loading className="max-h-[200px]" />
               </TableCell>
             </TableRow>
+          ) : (
+            <>
+              {table.getRowModel().rows?.length ? (
+                table.getRowModel().rows.map((row) => {
+                  return (
+                    <React.Fragment key={row.id}>
+                      <TableRow className={rowClasses} key={row.id}>
+                        {subTable && (
+                          <TableCell className="p-0 w-[50px] px-2">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-8 w-8 p-0"
+                              onClick={() => toggleRow(row.id)}
+                            >
+                              {expandedRows[row.id] ? (
+                                <ChevronDown className="h-4 w-4" />
+                              ) : (
+                                <ChevronRight className="h-4 w-4" />
+                              )}
+                              <span className="sr-only">Toggle row</span>
+                            </Button>
+                          </TableCell>
+                        )}
+                        {row.getVisibleCells().map((cell) => (
+                          <TableCell
+                            key={cell.id}
+                            className={cn("px-4 py-3 ", cellsClasses)}
+                          >
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext()
+                            )}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                      {subTable && expandedRows[row.id] && (
+                        <TableRow>
+                          <TableCell
+                            colSpan={columns.length + 1}
+                            className="p-0"
+                          >
+                            <div className="p-4">{subTable(row.original)}</div>
+                          </TableCell>
+                        </TableRow>
+                      )}
+                    </React.Fragment>
+                  );
+                })
+              ) : (
+                <TableRow className={rowClasses}>
+                  <TableCell
+                    colSpan={columns.length + (subTable ? 1 : 0)}
+                    className="h-24 text-center"
+                  >
+                    {emptyMessage || "No Data Found"}
+                  </TableCell>
+                </TableRow>
+              )}
+            </>
           )}
         </TableBody>
       </Table>
