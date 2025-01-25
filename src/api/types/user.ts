@@ -19,7 +19,7 @@ export interface User {
   gender: Gender;
   address_city: string;
   address_country: string;
-  user_type: UserType;
+  user_type: UserType | "admin";
   email: string;
   phone_number: string;
   password: string;

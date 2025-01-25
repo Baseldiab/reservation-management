@@ -51,10 +51,10 @@ function FilterReservations() {
   const handleFiltersApply = () => {
     queryClient.setQueryData(["all-reservations-filters"], {
       ...filters,
-      ...(checkIn && { checkIn }),
-      ...(checkOut && { checkOut }),
-      ...(reservationStatus && { reservationStatus }),
-      ...(hotelName && { hotelName }),
+      ...(checkIn && { check_in: checkIn }),
+      ...(checkOut && { check_out: checkOut }),
+      ...(reservationStatus && { reservation_status: reservationStatus }),
+      ...(hotelName && { hotel_name: hotelName }),
       ...(name && { name }),
     });
     setFiltersOpen(false);

@@ -6,6 +6,7 @@ import Layout from "@/components/layout/layout";
 // components auth
 import AuthedRoute from "@/components/auth/authed-route";
 import UnauthedRoute from "@/components/auth/unauthed-route";
+import AdminRoute from "@/components/auth/admin-routes";
 
 // Pages
 import ErrorElement from "@/components/error/error";
@@ -18,9 +19,12 @@ import SignUpPage from "@/pages/signUp/singup-page";
 import HomePage from "@/pages/home/home-page";
 import ProfilePage from "@/pages/profile/profile-page";
 
+// pages reservation
+import ReservationDetailsPage from "@/pages/reservation/[id]";
+
 // pages users
 import UsersPage from "@/pages/users/users-page";
-import AdminRoute from "./components/auth/admin-routes";
+import UserDetailsPage from "@/pages/users/[id]";
 
 const AppRouter = () => {
   const router = createBrowserRouter([
@@ -44,7 +48,14 @@ const AppRouter = () => {
             {
               path: "/users",
               element: <AdminRoute />,
-              children: [{ index: true, element: <UsersPage /> }],
+              children: [
+                { path: "", element: <UsersPage /> },
+                { path: ":id", element: <UserDetailsPage /> },
+              ],
+            },
+            {
+              path: "/reservations/:id",
+              element: <ReservationDetailsPage />,
             },
           ],
         },

@@ -15,7 +15,11 @@ const AdminRoute = () => {
     retry: 1,
   });
   if (isLoading) return <Loading />;
-  return user?.user_type === UserType.ADMIN ? <Outlet /> : <Navigate to="/" />;
+  return user?.user_type === UserType.ADMIN || user?.user_type === "admin" ? (
+    <Outlet />
+  ) : (
+    <Navigate to="/" />
+  );
 };
 
 export default AdminRoute;

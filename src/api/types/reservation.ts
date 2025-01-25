@@ -14,6 +14,7 @@ export interface ReservationParams {
     userId?: string;
     hotel?: string;
     name?: string;
+    search?: string;
 }
 
 export interface ReservationFilterParams {

@@ -1,11 +1,12 @@
 import React from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 
 // hooks
 import { useToast } from "@/hooks/use-toast";
 
 // icons
-import { Loader2, PencilIcon, Trash2 } from "lucide-react";
+import { Ellipsis, Loader2, PencilIcon, Trash2 } from "lucide-react";
 
 // api
 import { deleteReservation } from "@/api/routes/reservation";
@@ -28,6 +29,7 @@ export default function AdminReservationTableOptions({
 }: AdminReservationTableOptionsProps) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   // states
   const [isEditDialogOpen, setIsEditDialogOpen] = React.useState(false);
@@ -93,6 +95,16 @@ export default function AdminReservationTableOptions({
           ) : (
             <Trash2 className="size-4 -mb-1 min-w-4 min-h-4" />
           )}
+        </Button>
+        <Button
+          title="Details"
+          disabled={false}
+          onClick={() => {
+            navigate(`/home/reservations/${item.id}`);
+          }}
+          className="flex items-center font-medium select-none gap-2 border !bg-transparent !text-theme-background-dark dark:!text-theme-background-main  dark:!bg-transparent size-8 hover:!bg-theme-background-primary hover:!text-theme-background-main"
+        >
+          <Ellipsis className="size-4 -mb-1 min-w-4 min-h-4 " />
         </Button>
       </div>
 
