@@ -16,7 +16,7 @@ function Search() {
   const debouncedSetQuery = useCallback(
     (value: string) => {
       debounce((searchValue: string) => {
-        queryClient.setQueryData(["all-reservations-search"], searchValue);
+        queryClient.setQueryData(["all-users-search"], searchValue);
       }, 500)(value);
     },
     [queryClient]
@@ -30,9 +30,9 @@ function Search() {
 
   const handleReset = useCallback(() => {
     setSearchValue("");
-    queryClient.setQueryData(["all-reservations-search"], "");
+    queryClient.setQueryData(["all-users-search"], "");
     queryClient.invalidateQueries({
-      queryKey: ["all-reservations"],
+      queryKey: ["all-users"],
       exact: false,
     });
   }, [queryClient]);
@@ -40,13 +40,11 @@ function Search() {
   return (
     <div className="flex-1 min-w-[200px] self-start md:max-w-[400px] relative max-md:!w-full">
       <Input
-        defaultValue={
-          queryClient.getQueryData(["all-reservations-search"]) as string
-        }
+        defaultValue={queryClient.getQueryData(["all-users-search"]) as string}
         value={searchValue}
         onChange={handleSearch}
         className="flex-1 h-[44px] rounded-lg border border-theme-separating-border "
-        placeholder="Search Reservation"
+        placeholder="Search User"
       />
       {searchValue !== "" ? (
         <button

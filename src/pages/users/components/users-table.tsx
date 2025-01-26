@@ -3,12 +3,14 @@ import { useQuery } from "@tanstack/react-query";
 
 // lib imports
 import { ColumnDef } from "@tanstack/react-table";
+import { formatDate } from "@/lib/utils";
 
 // asset imports
 
 // api
-import { User } from "@/api/types/user";
+import { User, UserFilterParams } from "@/api/types/user";
 import { getAllUsers } from "@/api/routes/user";
+import { UserType } from "@/api/enums/enums";
 
 // Ui imports
 import { DataTable } from "@/components/ui/data-table";
@@ -22,13 +24,10 @@ import {
 } from "@/components/ui/pagination";
 
 // components dialogs
-import Loading from "@/components/common/loading";
 
 import SearchUser from "@/pages/users/components/search-user";
 import FilterUsers from "@/pages/users/components/filter-users";
-import { formatDate } from "@/lib/utils";
-import UsersTableOptions from "./users-table-options";
-import { UserType } from "@/api/enums/enums";
+import UsersTableOptions from "@/pages/users/components/users-table-options";
 
 export default function UsersTable() {
   console.log(formatDate(new Date().toISOString()));
@@ -37,10 +36,19 @@ export default function UsersTable() {
   const [currentPage, setCurrentPage] = React.useState(1);
   const itemsPerPage = 5;
 
+  const { data: filters } = useQuery<UserFilterParams>({
+    queryKey: ["all-users-filters"],
+  });
+
+  const { data: searchValue } = useQuery<string>({
+    queryKey: ["all-users-search"],
+  });
+
   // Queries
   const { data: allUsers, isLoading: isUsersLoading } = useQuery({
-    queryKey: ["users"],
-    queryFn: () => getAllUsers(),
+    queryKey: ["all-users", filters, searchValue],
+    queryFn: () =>
+      getAllUsers({ ...filters, ...(searchValue && { search: searchValue }) }),
   });
 
   // Calculate pagination
@@ -137,11 +145,7 @@ export default function UsersTable() {
     setCurrentPage(page);
   };
 
-  if (isUsersLoading || !allUsers) {
-    return <Loading />;
-  }
-
-  const totalPages = Math.ceil(allUsers.length / itemsPerPage);
+  const totalPages = Math.ceil((allUsers?.length || 0) / itemsPerPage);
 
   return (
     <section className="w-full bg-transparent rounded-3xl p-6 flex flex-col gap-6 container">
@@ -158,12 +162,13 @@ export default function UsersTable() {
 
       <DataTable
         columns={columns}
-        data={paginatedUsers}
+        data={paginatedUsers || []}
         headerClasses="!bg-blue-500 dark:!bg-white/50 *:hover:!bg-theme-main-primary  !border-none rounded-xl"
         headerCellClasses="!text-white !font-semibold"
         className="border-2 border-theme-lunar-light border-none shadow-xl rounded-xl"
         rowClasses="dark:!bg-white/5"
         emptyMessage="No Users Found"
+        isLoading={isUsersLoading}
       />
 
       {totalPages > 1 && (

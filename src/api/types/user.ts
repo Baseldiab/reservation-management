@@ -10,6 +10,15 @@ export interface UsersParams {
   phone_number?: string;
 }
 
+export interface UserFilterParams {
+  gender?: Gender;
+  address_city?: string;
+  address_country?: string;
+  email?: string;
+  phone_number?: string;
+  user_type?: UserType;
+}
+
 
 export interface User {
   created_at: string;

@@ -89,14 +89,9 @@ export default function Navbar() {
             <LogoutBtn className="max-lg:hidden" />
           </BreathAnimation>
 
-          <MenuNavbar
-            navbarMenuArray={navbarMenuArray}
-            className={`lg:hidden`}
-          />
-
           {/* <Avatar className="size-10 !bg-gray-200 dark:!bg-gray-800">
             <AvatarFallback className="text-slate-900 dark:text-white font-semibold text-base"></AvatarFallback>
-          </Avatar> */}
+            </Avatar> */}
 
           <BreathAnimation>
             <Button
@@ -109,6 +104,10 @@ export default function Navbar() {
               <ProfileImg className="size-5 text-slate-900 dark:text-white" />
             </Button>
           </BreathAnimation>
+          <MenuNavbar
+            navbarMenuArray={navbarMenuArray}
+            className={`lg:hidden`}
+          />
         </div>
       </div>
     </nav>
