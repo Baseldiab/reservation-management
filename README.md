@@ -1,38 +1,96 @@
-# User Management System
+# Reservation Management System
 
-A comprehensive user management system built with modern web technologies, providing a robust solution for handling user data and authentication.
+A comprehensive hotel reservation management system built with modern web technologies, enabling users to book and manage hotel reservations while administrators oversee and control all bookings through a centralized dashboard.
 
 ## 🚀 Features
 
-- User authentication (Login, Register, Password Recovery)
-- Admin and User dashboards
-- Profile management
-- User roles and permissions
-- Secure API integration
-- Real-time notifications
-- Responsive design for all devices
-- Theme customization (Dark/Light mode)
-- Form validation and error handling
-- Data caching and optimistic updates
+- **Authentication System**
+
+  - Secure user authentication (Login, Register, Password Recovery)
+  - Role-based access control (Admin/User)
+  - Profile management with editable user details
+
+- **Reservation Management**
+
+  - Create, view, edit and cancel reservations
+  - Real-time status updates (Pending, Approved, Cancelled)
+  - Room type selection (Single, Double, Triple, Suite)
+  - Date range selection for bookings
+  - Guest count management
+
+- **Admin Dashboard**
+
+  - Comprehensive reservation overview
+  - User management interface
+  - Booking approval/rejection system
+  - Advanced filtering and search capabilities
+  - Detailed analytics and reports
+
+- **User Interface**
+  - Responsive design for all devices
+  - Dark/Light theme support
+  - Real-time notifications
+  - Intuitive booking interface
+  - Form validation with error handling
 
 ## 🛠️ Tech Stack
 
-- [React](https://reactjs.org/) - A JavaScript library for building user interfaces
-- [TypeScript](https://www.typescriptlang.org/) - For enhanced type safety and developer experience
-- [Vite](https://vitejs.dev/) - Next-generation frontend tooling
-- [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS framework
-- [shadcn/ui](https://ui.shadcn.com/) - High-quality, accessible UI components
-- [React Query](https://tanstack.com/query/latest) - Powerful data synchronization
-- [React Hook Form](https://react-hook-form.com/) - Performant forms with easy validation
-- [Zod](https://zod.dev/) - TypeScript-first schema validation
-- [Axios](https://axios-http.com/) - Promise-based HTTP client
+- **Frontend Framework**
+
+  - [React](https://reactjs.org/) - UI library
+  - [TypeScript](https://www.typescriptlang.org/) - Type safety
+  - [Vite](https://vitejs.dev/) - Build tool
+
+- **Styling & UI**
+
+  - [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS
+  - [shadcn/ui](https://ui.shadcn.com/) - Component library
+  - [Framer Motion](https://www.framer.com/motion/) - Animations
+
+- **State Management & Data Fetching**
+
+  - [React Query](https://tanstack.com/query/latest) - Server state
+  - [Zustand](https://zustand-demo.pmnd.rs/) - Client state
+  - [Axios](https://axios-http.com/) - HTTP client
+
+- **Form Handling & Validation**
+  - [React Hook Form](https://react-hook-form.com/) - Form management
+  - [Zod](https://zod.dev/) - Schema validation
+
+## 📁 Project Structure
+
+<pre style="background-color: #1a1a1a; color: #fff; padding: 15px; border-radius: 5px; font-family: 'Consolas', monospace;">
+project-root/
+src/ ├── api/                      <span style="color: #888"># API Integration Layer</span>
+    │   ├── config/               <span style="color: #888"># API configuration</span>
+    │   ├── routes/              <span style="color: #888"># API endpoints</span>
+    │   ├── types/               <span style="color: #888"># TypeScript interfaces</span>
+    │   └── enums/               <span style="color: #888"># Enums for app constants</span>
+    │
+    ├── components/               <span style="color: #888"># Reusable Components</span>
+    │   ├── common/              <span style="color: #888"># Shared components</span>
+    │   ├── layout/              <span style="color: #888"># Layout structure</span>
+    │   ├── ui/                  <span style="color: #888"># Base UI components</span>
+    │   └── rules/               <span style="color: #888"># Form validation rules</span>
+    │
+    ├── pages/                   <span style="color: #888"># Page Components</span>
+    │   ├── auth/               <span style="color: #888"># Authentication pages</span>
+    │   ├── home/               <span style="color: #888"># Dashboard pages</span>
+    │   ├── profile/            <span style="color: #888"># User profile</span>
+    │   └── users/              <span style="color: #888"># User management</span>
+    │
+    ├── hooks/                  <span style="color: #888"># Custom React Hooks</span>
+    ├── lib/                    <span style="color: #888"># Utility Libraries</span>
+    ├── providers/              <span style="color: #888"># Context Providers</span>
+    └── App.tsx                 <span style="color: #888"># Root component</span>
+</pre>
 
 ## 🚀 Getting Started
 
 1. Clone the repository
 
 ```bash
-git clone https://github.com/your-username/user-management-system.git
+git clone https://github.com/your-username/reservation-management-system.git
 ```
 
 2. Install dependencies
@@ -53,84 +111,16 @@ npm run dev
 npm run build
 ```
 
-## 📁 Project Structure
+## 🔑 Environment Variables
 
-<pre style="background-color: #1a1a1a; color: #fff; padding: 15px; border-radius: 5px; font-family: 'Consolas', monospace;">
-project-root/
-src/ ├── api/                      <span style="color: #888"># API Integration Layer</span>
-    │   ├── config/               <span style="color: #888"># API configuration</span>
-    │   ├── routes/              <span style="color: #888"># API endpoints</span>
-    │   ├── types/               <span style="color: #888"># TypeScript interfaces</span>
-    │   └── enums/               <span style="color: #888"># Enums for app constants</span>
-    │
-    ├── components/               <span style="color: #888"># Reusable Components</span>
-    │   ├── common/              <span style="color: #888"># Shared components</span>
-    │   │   ├── loading/        <span style="color: #888"># Loading states</span>
-    │   │   ├── no-data/        <span style="color: #888"># Empty states</span>
-    │   │   └── table/          <span style="color: #888"># Table components</span>
-    │   ├── dialogs/             <span style="color: #888"># Modal dialogs</span>
-    │   ├── footer/              <span style="color: #888"># Footer component</span>
-    │   ├── layout/              <span style="color: #888"># Layout structure</span>
-    │   ├── navbar/              <span style="color: #888"># Navigation</span>
-    │   │   └── theme-toggle/    <span style="color: #888"># Theme switcher</span>
-    │   ├── rules/               <span style="color: #888"># Form validation rules</span>
-    │   └── ui/                  <span style="color: #888"># Base UI components</span>
-    │
-    ├── pages/                   <span style="color: #888"># Page Components</span>
-    │   ├── auth/               <span style="color: #888"># Authentication Pages</span>
-    │   │   ├── login/         <span style="color: #888"># Login page</span>
-    │   │   ├── register/      <span style="color: #888"># Registration page</span>
-    │   │   └── forgot-password/<span style="color: #888"># Password recovery</span>
-    │   │
-    │   ├── home/               <span style="color: #888"># Home Pages</span>
-    │   │   ├── home-admin/    <span style="color: #888"># Admin dashboard</span>
-    │   │   │   ├── components/<span style="color: #888"># Admin components</span>
-    │   │   │   └── [id].tsx   <span style="color: #888"># Reservation details</span>
-    │   │   └── home-user/     <span style="color: #888"># User dashboard</span>
-    │   │       ├── components/<span style="color: #888"># User components</span>
-    │   │       └── [id].tsx   <span style="color: #888"># User reservation details</span>
-    │   │
-    │   ├── profile/            <span style="color: #888"># User Profile</span>
-    │   │   ├── components/    <span style="color: #888"># Profile components</span>
-    │   │   └── edit-profile/  <span style="color: #888"># Profile editing</span>
-    │   │
-    │   └── users/              <span style="color: #888"># User Management</span>
-    │       ├── components/    <span style="color: #888"># User list components</span>
-    │       └── reservations/  <span style="color: #888"># User reservations</span>
-    │
-    ├── hooks/                  <span style="color: #888"># Custom React Hooks</span>
-    │   ├── use-toast.ts       <span style="color: #888"># Toast notifications</span>
-    │   └── use-auth.ts        <span style="color: #888"># Authentication hook</span>
-    │
-    ├── lib/                    <span style="color: #888"># Utility Libraries</span>
-    │   ├── constants/         <span style="color: #888"># App constants</span>
-    │   └── utils.ts          <span style="color: #888"># Helper functions</span>
-    │
-    ├── providers/              <span style="color: #888"># Context Providers</span>
-    │   └── theme-provider.tsx <span style="color: #888"># Theme context</span>
-    │
-    ├── App.tsx                 <span style="color: #888"># Root component</span>
-    ├── router.tsx              <span style="color: #888"># Route definitions</span>
-    ├── main.tsx               <span style="color: #888"># Entry point</span>
-    └── index.css              <span style="color: #888"># Global styles</span>
-</pre>
+Create a `.env` file in the root directory:
 
-## 🔑 Key Features Explained
-
-- **Authentication System**: Complete user authentication flow with login, registration, and password recovery
-- **Role-Based Access**: Separate dashboards and features for administrators and regular users
-- **Profile Management**: Users can view and edit their profile information
-- **Responsive Design**: Fully responsive interface that works seamlessly across all devices
-- **Theme Support**: Easy switching between light and dark themes
-- **Type Safety**: Full TypeScript implementation for better code quality and developer experience
-- **Modern State Management**: Efficient state handling with React Query for server state
-- **Form Handling**: Robust form management with validation using React Hook Form and Zod
-- **Component Library**: Beautifully designed UI components using shadcn/ui
-- **API Integration**: Type-safe API calls using Axios with proper error handling
+```env
+VITE_API_URL=your_api_url
+VITE_API_KEY=your_api_key
+```
 
 ## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
 
 1. Fork the project
 2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
@@ -142,9 +132,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
----
-
-### 👨‍💻 Author
+## 👨‍💻 Author
 
 Developed with ❤️ by [Basel Diab](https://github.com/baseldiab)
 
