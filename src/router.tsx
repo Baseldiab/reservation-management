@@ -25,6 +25,8 @@ import UserReservationDetailsPage from "@/pages/home/home-user/reservation[id]";
 
 // pages users
 import UsersPage from "@/pages/users/users-page";
+import UserDetailsPage from "./pages/users/user[id]";
+import UserReservationsTable from "./pages/users/user-reservation/components/user-reservation-table";
 
 const AppRouter = () => {
   const router = createBrowserRouter([
@@ -59,7 +61,14 @@ const AppRouter = () => {
             {
               path: "/users",
               element: <AdminRoute />,
-              children: [{ path: "", element: <UsersPage /> }],
+              children: [
+                { path: "", element: <UsersPage /> },
+                { path: ":id", element: <UserDetailsPage /> },
+                {
+                  path: ":id/user-reservations",
+                  element: <UserReservationsTable />,
+                },
+              ],
             },
           ],
         },

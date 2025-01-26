@@ -83,7 +83,7 @@ export default function UsersTableOptions({ item }: UsersTableOptionsProps) {
           title="Details"
           disabled={false}
           onClick={() => {
-            navigate(`/admin/reservations/${item.id}`);
+            navigate(`/users/${item.id}`);
           }}
           className="flex items-center font-medium select-none gap-2 border !bg-transparent !text-theme-background-dark dark:!text-theme-background-main  dark:!bg-transparent size-8 hover:!bg-theme-background-primary hover:!text-theme-background-main"
         >

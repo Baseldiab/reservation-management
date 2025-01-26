@@ -39,6 +39,14 @@ export const getCurrentProfile = async (
       params,
     });
   };
+export const getUserById = async (
+    id: number | string,
+  ): Promise< User> => {
+    return request({
+      url: `users/${id}`,
+      method: "get",
+    });
+  };
 
 // POST create user
 export const signUp = async (

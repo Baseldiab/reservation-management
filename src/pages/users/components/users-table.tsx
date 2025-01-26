@@ -163,8 +163,8 @@ export default function UsersTable() {
       <DataTable
         columns={columns}
         data={paginatedUsers || []}
-        headerClasses="!bg-blue-500 dark:!bg-white/50 *:hover:!bg-theme-main-primary  !border-none rounded-xl"
-        headerCellClasses="!text-white !font-semibold"
+        headerClasses="!bg-theme-background-primary dark:!bg-theme-button-primary/90 *:hover:bg-theme-background-primary !border-none rounded-xl"
+        headerCellClasses="!text-white !font-semibold bg-theme-background-primary"
         className="border-2 border-theme-lunar-light border-none shadow-xl rounded-xl"
         rowClasses="dark:!bg-white/5"
         emptyMessage="No Users Found"
