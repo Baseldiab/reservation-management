@@ -11,11 +11,10 @@ export interface UsersParams {
 }
 
 export interface UserFilterParams {
+  name?: string;
   gender?: Gender;
   address_city?: string;
   address_country?: string;
-  email?: string;
-  phone_number?: string;
   user_type?: UserType;
 }
 
