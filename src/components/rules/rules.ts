@@ -64,6 +64,28 @@ export const signUpSchema = z.object({
         "Password must contain at least one special character like @&'\"*%$"
       ),
 });
+
+export const EditProfileSchema = z.object({
+  name: z.string().min(3, "Name must be more than 3 characters"),
+  email: z.string().email("Please enter a valid email address"),
+  address_city: z.string().min(3, "First Name must be more than 3 characters"),
+  address_country: z.string().min(3, "First Name must be more than 3 characters"),
+  gender: z.enum([Gender.MALE, Gender.FEMALE]),
+  phone_number: z.string().regex(/^\d{11}$/, "Invalid phone number format"),
+    password: z
+      .string()
+      .min(6, "Password must be at least 6 characters long")
+      .max(20, "Password must not exceed 20 characters")
+      .regex(
+        /[A-Za-z\u0600-\u06FF]/,
+        "Password must contain at least one letter"
+      )
+      .regex(/[0-9]/, "Password must contain at least one number")
+      .regex(
+        /[@&'"*%$]/,
+        "Password must contain at least one special character like @&'\"*%$"
+      ),
+});
   
 
 

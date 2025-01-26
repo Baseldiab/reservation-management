@@ -1,6 +1,6 @@
 // lib imports
 import { useToast } from "@/hooks/use-toast";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -8,7 +8,7 @@ import { secureStorage } from "@/utils/secure-storage";
 import { useNavigate } from "react-router-dom";
 
 // api imports
-import { signUp } from "@/api/routes/user";
+import { updateUser } from "@/api/routes/user";
 
 // ui imports
 import { Button } from "@/components/ui/button";
@@ -25,17 +25,15 @@ import {
 
 // assets import
 import { Loader2 } from "lucide-react";
-import MainLogoIcon from "@/components/icons/MainLogoIcon";
 
 // hooks import
-import { useTheme } from "@/hooks/use-theme";
 
 // rules import
-import { signUpSchema } from "@/components/rules/rules";
+import { EditProfileSchema } from "@/components/rules/rules";
 
 // login components
 import SignUpFooter from "@/pages/signUp/components/signup-footer";
-import { useState } from "react";
+import React, { useState } from "react";
 
 // Add import for PhoneInput
 import { PhoneInput } from "@/components/ui/extend/phone-number";
@@ -50,11 +48,11 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { Gender } from "@/api/enums/enums";
+import { User, UserUpdateDto } from "@/api/types/user";
 
-type SignUpFormValues = z.infer<typeof signUpSchema>;
+type EditProfileFormValues = z.infer<typeof EditProfileSchema>;
 
-const UserForm = () => {
-  const { theme } = useTheme();
+const EditProfile = () => {
   // Remove useState hooks
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -62,36 +60,31 @@ const UserForm = () => {
 
   const [selectedCode, setSelectedCode] = useState<string>("+20");
 
+  const { data: user } = useQuery<User>({
+    queryKey: ["user"],
+  });
+
   // Add form hook
-  const form = useForm<SignUpFormValues>({
-    resolver: zodResolver(signUpSchema),
+  const form = useForm<EditProfileFormValues>({
+    resolver: zodResolver(EditProfileSchema),
     defaultValues: {
-      name: "",
-      email: "",
+      name: user?.name || "",
+      email: user?.email || "",
       password: "",
-      phone_number: "",
-      address_city: "",
-      address_country: "",
-      gender: Gender.MALE,
+      phone_number: user?.phone_number || "",
+      address_city: user?.address_city || "",
+      address_country: user?.address_country || "",
+      gender: user?.gender || Gender.MALE,
     },
   });
 
-  const signUpMutation = useMutation({
-    mutationKey: ["signUp"],
-    mutationFn: (data: SignUpFormValues) =>
-      signUp({
-        name: data.name,
-        email: data.email,
-        password: data.password,
-        gender: data.gender,
-        phone_number: `${selectedCode}${data.phone_number}`,
-        address_city: data.address_city,
-        address_country: data.address_country,
-      }),
+  const editProfileMutation = useMutation({
+    mutationKey: ["edit-profile"],
+    mutationFn: (data: UserUpdateDto) => updateUser(user?.id || "", data),
     onSuccess: (data) => {
       secureStorage.set(data);
       toast({
-        description: "successfully signed up",
+        description: "Profile updated successfully",
         variant: "success",
       });
       queryClient.invalidateQueries({ queryKey: ["user"] });
@@ -109,9 +102,43 @@ const UserForm = () => {
   });
 
   // Update handle login
-  const onSubmit = (data: SignUpFormValues) => {
-    signUpMutation.mutate(data);
+  const onSubmit = (data: EditProfileFormValues) => {
+    const payload: UserUpdateDto = {};
+
+    if (data.name !== user?.name && data.name !== "") payload.name = data.name;
+    if (data.email !== user?.email && data.email !== "")
+      payload.email = data.email;
+    if (data.phone_number !== user?.phone_number && data.phone_number !== "")
+      payload.phone_number = `${selectedCode}${data.phone_number}`;
+    if (data.address_city !== user?.address_city && data.address_city !== "")
+      payload.address_city = data.address_city;
+    if (
+      data.address_country !== user?.address_country &&
+      data.address_country !== ""
+    )
+      payload.address_country = data.address_country;
+    if (data.gender !== user?.gender) payload.gender = data.gender;
+    if (data.password !== user?.password && data.password !== "")
+      payload.password = data.password;
+
+    if (Object.keys(payload).length > 0) {
+      editProfileMutation.mutate(payload);
+    }
   };
+
+  React.useEffect(() => {
+    if (user) {
+      form.reset({
+        name: user.name,
+        email: user.email,
+        password: "",
+        phone_number: user.phone_number,
+        address_city: user.address_city,
+        address_country: user.address_country,
+        gender: user.gender,
+      });
+    }
+  }, [user, form]);
 
   return (
     <div className="flex justify-center items-center min-w-screen min-h-screen bg-theme-background-secondary dark:bg-theme-background-dark py-5">
@@ -119,18 +146,10 @@ const UserForm = () => {
         <div className="w-full flex flex-col items-center justify-center gap-6">
           {/* <img src={Logo} alt="logo" className="size-14" /> */}
 
-          {theme === "light" ? (
-            <MainLogoIcon fill="#000" className="md:w-48 w-40" />
-          ) : (
-            <MainLogoIcon fill="#fff" className="md:w-48 w-40" />
-          )}
           <div className="flex flex-col gap-2 items-center justify-center">
             <h2 className="text-2xl lg:text-[32px] font-bold text-theme-text-title dark:text-theme-text-dark">
-              Sign up
+              Profile
             </h2>
-            <p className="text-theme-text-subtitle text-center">
-              Please enter your details to get started
-            </p>
           </div>
 
           <Form {...form}>
@@ -357,13 +376,13 @@ const UserForm = () => {
 
               {/* Sign Up Button */}
               <Button
-                disabled={signUpMutation.isPending}
+                disabled={editProfileMutation.isPending}
                 type="submit"
                 className="w-full h-[56px] font-medium text-base flex items-center gap-2"
                 variant="default"
               >
-                Sign Up
-                {signUpMutation.isPending && (
+                Save
+                {editProfileMutation.isPending && (
                   <Loader2 className="size-4 animate-spin -mb-1" />
                 )}
               </Button>
@@ -377,4 +396,4 @@ const UserForm = () => {
   );
 };
 
-export default UserForm;
+export default EditProfile;
