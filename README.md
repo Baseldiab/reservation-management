@@ -61,28 +61,138 @@ A comprehensive hotel reservation management system built with modern web techno
 
 <pre style="background-color: #1a1a1a; color: #fff; padding: 15px; border-radius: 5px; font-family: 'Consolas', monospace;">
 project-root/
-src/ ├── api/                      <span style="color: #888"># API Integration Layer</span>
-    │   ├── config/               <span style="color: #888"># API configuration</span>
-    │   ├── routes/              <span style="color: #888"># API endpoints</span>
-    │   ├── types/               <span style="color: #888"># TypeScript interfaces</span>
-    │   └── enums/               <span style="color: #888"># Enums for app constants</span>
-    │
-    ├── components/               <span style="color: #888"># Reusable Components</span>
-    │   ├── common/              <span style="color: #888"># Shared components</span>
-    │   ├── layout/              <span style="color: #888"># Layout structure</span>
-    │   ├── ui/                  <span style="color: #888"># Base UI components</span>
-    │   └── rules/               <span style="color: #888"># Form validation rules</span>
-    │
-    ├── pages/                   <span style="color: #888"># Page Components</span>
-    │   ├── auth/               <span style="color: #888"># Authentication pages</span>
-    │   ├── home/               <span style="color: #888"># Dashboard pages</span>
-    │   ├── profile/            <span style="color: #888"># User profile</span>
-    │   └── users/              <span style="color: #888"># User management</span>
-    │
-    ├── hooks/                  <span style="color: #888"># Custom React Hooks</span>
-    ├── lib/                    <span style="color: #888"># Utility Libraries</span>
-    ├── providers/              <span style="color: #888"># Context Providers</span>
-    └── App.tsx                 <span style="color: #888"># Root component</span>
+├── public/                    <span style="color: #888"># Public assets</span>
+│   └── favicon.ico           <span style="color: #888"># Site favicon</span>
+│
+├── src/                      <span style="color: #888"># Source code</span>
+│   ├── api/                  <span style="color: #888"># API Integration Layer</span>
+│   │   ├── config/          <span style="color: #888"># API configuration</span>
+│   │   │   └── axios.ts
+│   │   ├── routes/          <span style="color: #888"># API endpoints</span>
+│   │   │   ├── auth.ts
+│   │   │   ├── reservation.ts
+│   │   │   └── user.ts
+│   │   ├── types/          <span style="color: #888"># TypeScript interfaces</span>
+│   │   │   ├── auth.ts
+│   │   │   ├── reservation.ts
+│   │   │   └── user.ts
+│   │   └── enums/          <span style="color: #888"># Application enums</span>
+│   │       └── enums.ts
+│   │
+│   ├── components/          <span style="color: #888"># Reusable Components</span>
+│   │   ├── common/         <span style="color: #888"># Shared components</span>
+│   │   │   ├── loading.tsx
+│   │   │   ├── noData.tsx
+│   │   │   └── reservation-table.tsx
+│   │   ├── footer/         <span style="color: #888"># Footer components</span>
+│   │   │   └── footer.tsx
+│   │   ├── layout/         <span style="color: #888"># Layout components</span>
+│   │   │   └── layout.tsx
+│   │   ├── navbar/         <span style="color: #888"># Navigation components</span>
+│   │   │   ├── menu-navbar.tsx
+│   │   │   ├── navbar.tsx
+│   │   │   └── theme-toggle.tsx
+│   │   ├── rules/          <span style="color: #888"># Validation rules</span>
+│   │   │   └── rules.ts
+│   │   └── ui/            <span style="color: #888"># UI components from shadcn</span>
+│   │       ├── alert-dialog.tsx
+│   │       ├── button.tsx
+│   │       ├── dialog.tsx
+│   │       ├── form.tsx
+│   │       ├── input.tsx
+│   │       ├── label.tsx
+│   │       ├── select.tsx
+│   │       ├── separator.tsx
+│   │       ├── table.tsx
+│   │       ├── toast.tsx
+│   │       └── toaster.tsx
+│   │
+│   ├── hooks/             <span style="color: #888"># Custom React Hooks</span>
+│   │   ├── use-auth.ts
+│   │   ├── use-media-query.ts
+│   │   └── use-theme.ts
+│   │
+│   ├── lib/               <span style="color: #888"># Utility Libraries</span>
+│   │   ├── constants/     <span style="color: #888"># Constants</span>
+│   │   │   ├── navbar.ts
+│   │   │   └── theme.ts
+│   │   └── utils.ts      <span style="color: #888"># Utility functions</span>
+│   │
+│   ├── pages/             <span style="color: #888"># Page Components</span>
+│   │   ├── auth/         <span style="color: #888"># Authentication pages</span>
+│   │   │   ├── login.tsx
+│   │   │   ├── register.tsx
+│   │   │   └── reset-password.tsx
+│   │   ├── home/         <span style="color: #888"># Home pages</span>
+│   │   │   ├── home-admin/
+│   │   │   │   ├── components/
+│   │   │   │   │   ├── add-edit-reservation.tsx
+│   │   │   │   │   ├── reservation-filter.tsx
+│   │   │   │   │   ├── reservation-search.tsx
+│   │   │   │   │   ├── reservation-table.tsx
+│   │   │   │   │   └── reservation-table-options.tsx
+│   │   │   │   └── reservation[id].tsx
+│   │   │   ├── home-user/
+│   │   │   │   ├── components/
+│   │   │   │   │   ├── add-edit-reservation.tsx
+│   │   │   │   │   ├── reservation-filter.tsx
+│   │   │   │   │   ├── reservation-search.tsx
+│   │   │   │   │   ├── reservation-table.tsx
+│   │   │   │   │   └── reservation-table-options.tsx
+│   │   │   │   └── reservation[id].tsx
+│   │   │   └── home-page.tsx
+│   │   ├── profile/     <span style="color: #888"># Profile pages</span>
+│   │   │   ├── components/
+│   │   │   │   └── edit-profile.tsx
+│   │   │   └── profile-page.tsx
+│   │   └── users/      <span style="color: #888"># User management</span>
+│   │       ├── components/
+│   │       │   ├── add-edit-user.tsx
+│   │       │   ├── user-filter.tsx
+│   │       │   ├── user-search.tsx
+│   │       │   ├── users-table.tsx
+│   │       │   └── user-table-options.tsx
+│   │       ├── user-reservation/
+│   │       │   └── components/
+│   │       │       ├── add-edit-reservation.tsx
+│   │       │       ├── reservation-filter.tsx
+│   │       │       ├── reservation-search.tsx
+│   │       │       └── reservation-table-options.tsx
+│   │       └── users-page.tsx
+│   │
+│   ├── providers/        <span style="color: #888"># Context Providers</span>
+│   │   ├── auth-provider.tsx
+│   │   └── theme-provider.tsx
+│   │
+│   ├── store/           <span style="color: #888"># State Management</span>
+│   │   └── use-store.ts
+│   │
+│   ├── styles/          <span style="color: #888"># Global Styles</span>
+│   │   └── globals.css
+│   │
+│   ├── App.css
+│   ├── App.tsx         <span style="color: #888"># Root component</span>
+│   ├── index.css
+│   └── main.tsx       <span style="color: #888"># Entry point</span>
+│
+├── .env              <span style="color: #888"># Environment variables</span>
+├── .eslintignore    <span style="color: #888"># ESLint ignore patterns</span>
+├── .eslintrc        <span style="color: #888"># ESLint rules</span>
+├── .gitignore       <span style="color: #888"># Git ignore rules</span>
+├── .prettierignore  <span style="color: #888"># Prettier ignore patterns</span>
+├── .prettierrc      <span style="color: #888"># Prettier configuration</span>
+├── components.json   <span style="color: #888"># ShadCN UI config</span>
+├── eslint.config.js <span style="color: #888"># ESLint configuration</span>
+├── index.html       <span style="color: #888"># HTML entry point</span>
+├── package.json     <span style="color: #888"># Project dependencies</span>
+├── postcss.config.js <span style="color: #888"># PostCSS configuration</span>
+├── README.md        <span style="color: #888"># Project documentation</span>
+├── tailwind.config.js <span style="color: #888"># Tailwind configuration</span>
+├── tsconfig.json    <span style="color: #888"># TypeScript configuration</span>
+├── tsconfig.app.json <span style="color: #888"># App TypeScript config</span>
+├── tsconfig.node.json <span style="color: #888"># Node TypeScript config</span>
+├── vercel.json      <span style="color: #888"># Vercel deployment config</span>
+└── vite.config.ts   <span style="color: #888"># Vite configuration</span>
 </pre>
 
 ## 🚀 Getting Started
